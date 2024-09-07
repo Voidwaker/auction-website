@@ -13,6 +13,7 @@ export const ALL_LISTINGS_URL = `${API_BASE}${API_AUCTION}${API_LISTINGS_BASE}`;
 export function save(key, value) {
     localStorage.setItem(key, JSON.stringify(value)); 
 }
+
 export function load(key) {
     return JSON.parse(localStorage.getItem(key));
 }
@@ -32,6 +33,75 @@ export async function getApiKey() {
         console.log(data);  // Logg API-nøkkel for testing
     } catch (error) {
         console.error('Error fetching API Key', error);
+    }
+}
+
+// Funksjon for å registrere ny bruker med 1000 kreditter
+export async function register(name, email, password) {
+    const response = await fetch(API_BASE + API_AUTH + API_REGISTER, {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({ 
+            name, 
+            email, 
+            password,
+            credits: 1000  // Gi brukeren 1000 credits ved registrering
+        }),
+    });
+
+    if (response.ok) {
+        return await response.json();
+    }
+    throw new Error("Failed to register account");
+}
+
+// Logg inn bruker og omdiriger til profilside
+export async function login(email, password) {
+    const response = await fetch(API_BASE + API_AUTH + API_LOGIN, {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+        const { accessToken, ...profile } = (await response.json()).data;
+        save("Token", accessToken);
+        save("Profile", profile);
+        window.location.href = "/pages/profile.html";  // Omdiriger til profilsiden etter innlogging
+        return profile;
+    }
+
+    throw new Error("Failed to login");
+}
+
+// Håndter innlogging og registrering
+export async function onAuth(event) {
+    event.preventDefault(); 
+    const form = event.target;
+
+    const name = form.elements['registerName']?.value || "";
+    const email = form.elements['loginEmail']?.value || form.elements['registerEmail']?.value;
+    const password = form.elements['loginPassword']?.value || form.elements['registerPassword']?.value;
+
+    if (event.submitter.textContent.trim() === "Log In") {
+        await login(email, password);
+    } else {
+        await register(name, email, password);
+        await login(email, password);  // Logg inn brukeren etter registrering
+    }
+}
+
+// Legg til event listeners for skjemaer
+export function setAuthListeners() {
+    const registerForm = document.getElementById("registerForm");
+    const loginForm = document.getElementById("loginForm");
+
+    if (registerForm) {
+        registerForm.addEventListener("submit", onAuth);
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener("submit", onAuth);
     }
 }
 
@@ -134,10 +204,22 @@ if (listingId) {
     }
 }
 
+// Log out-funksjon
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof setAuthListeners === 'function') {
-        setAuthListeners();
+    const logoutButton = document.getElementById("logoutButton");
+    if (logoutButton) {
+        logoutButton.addEventListener("click", () => {
+            // Fjern token og profilinformasjon fra localStorage
+            localStorage.removeItem("Token");
+            localStorage.removeItem("Profile");
+
+            // Omdiriger brukeren til forsiden eller innloggingssiden
+            window.location.href = "/index.html"; 
+        });
     }
+    
+    // Andre funksjoner som skal kjøre når DOM-en er lastet
+    setAuthListeners();
     fetchAndDisplayListings();
     getApiKey();  // Hent API-nøkkel for testing
 });
