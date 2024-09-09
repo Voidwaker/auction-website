@@ -8,14 +8,21 @@ export async function login(email, password) {
         body: JSON.stringify({ email, password }),
     });
 
+    console.log(response);
+
     if (response.ok) {
         const { accessToken, ...profile } = (await response.json()).data;
         save("Token", accessToken);
         save("Profile", profile);
         window.location.href = "/pages/profile.html";
         return profile;
+    } else {
+        const errorData = await response.json();
+        console.error("Error response:", errorData);  
     }
 
     throw new Error("Failed to login");
 }
+
+
 
