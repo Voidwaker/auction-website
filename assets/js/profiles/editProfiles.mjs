@@ -24,38 +24,6 @@ export async function updateUserCredits(username, credits) {
     }
 }
 
-export async function updateAvatar(avatarUrl) {
-    const profile = load("Profile");
-    const username = profile?.name;
-    
-    if (!username) {
-        console.error("No username found in profile.");
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE}/auction/profiles/${username}`, {
-            method: "PUT",
-            headers: {
-                "Authorization": `Bearer ${load("Token")}`,
-                "X-Noroff-API-Key": API_KEY,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ avatar: { url: avatarUrl, alt: "User Avatar" } }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error updating avatar: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('Avatar updated:', result);
-        document.getElementById("avatarImage").src = avatarUrl;
-    } catch (error) {
-        console.error("Error updating avatar:", error);
-    }
-}
-
 export async function fetchUserCredits(username) {
     try {
         const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
@@ -70,12 +38,12 @@ export async function fetchUserCredits(username) {
         }
 
         const result = await response.json();
-        console.log('User credits:', result);
         return result.data.credits;
     } catch (error) {
         console.error("Error fetching credits:", error);
     }
 }
+
 
 
 

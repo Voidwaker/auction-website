@@ -1,9 +1,8 @@
 import { login } from "./assets/js/auth/login.mjs";
 import { register } from "./assets/js/auth/register.mjs";
 import { logout } from "./assets/js/auth/logout.mjs";
-import { updateCreditDisplay, updateBioDisplay, updateProfileName } from "./assets/js/profiles/viewProfile.mjs";
+import { updateCreditDisplay, updateBioDisplay, updateProfileName, createAuction } from "./assets/js/profiles/viewProfile.mjs";
 import { fetchAndDisplayListings } from "./assets/js/auctions/viewAuctions.mjs";
-import { createAuction } from "./assets/js/auctions/createAuctions.mjs";
 
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
@@ -14,7 +13,6 @@ if (loginForm) {
         await login(email, password);
     });
 }
-
 
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
@@ -34,13 +32,11 @@ if (logoutButton) {
     logoutButton.addEventListener("click", logout);
 }
 
-
 if (window.location.pathname.includes("/profile.html")) {
     updateCreditDisplay();
     updateBioDisplay();
     updateProfileName();
 
- 
     const createAuctionForm = document.getElementById("createAuctionForm");
     if (createAuctionForm) {
         createAuctionForm.addEventListener("submit", async (event) => {
@@ -54,7 +50,7 @@ if (window.location.pathname.includes("/profile.html")) {
     }
 }
 
-
 if (window.location.pathname.includes("/auctions.html")) {
     fetchAndDisplayListings();
 }
+
