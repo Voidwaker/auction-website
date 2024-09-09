@@ -486,10 +486,6 @@ button,
 [type=reset],
 [type=submit] {
   -webkit-appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -547,7 +543,6 @@ legend + * {
 
 [type=search] {
   -webkit-appearance: textfield;
-  appearance: textfield;
   outline-offset: -2px;
 }
 
@@ -11848,6 +11843,33 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+}
+body {
+  background-color: #343a40;
+}
+
+.profile-sidebar {
+  background-color: #212529;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+.profile-sidebar .profile-avatar img {
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+.profile-sidebar .profile-info {
+  margin-bottom: 20px;
+}
+.profile-sidebar .profile-info p {
+  font-size: 18px;
+}
+.profile-sidebar .profile-actions {
+  margin-top: 20px;
+}
+.profile-sidebar .profile-actions .btn {
+  width: 100%;
+  margin-bottom: 15px;
 }
 
 /*# sourceMappingURL=main.css.map */

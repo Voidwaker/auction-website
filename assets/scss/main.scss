@@ -1,1 +1,34 @@
 @import "../../node_modules/bootstrap/scss/bootstrap";
+body {
+    background-color: #343a40;
+  }
+  
+  .profile-sidebar {
+    background-color: #212529;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  
+    .profile-avatar img {
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+  
+    .profile-info {
+      margin-bottom: 20px;
+  
+      p {
+        font-size: 18px;
+      }
+    }
+  
+    .profile-actions {
+      margin-top: 20px;
+  
+      .btn {
+        width: 100%;
+        margin-bottom: 15px;
+      }
+    }
+  }
+  

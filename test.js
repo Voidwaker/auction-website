@@ -11,7 +11,7 @@ export const ALL_LISTINGS_URL = `${API_BASE}${API_AUCTION}${API_LISTINGS_BASE}`;
 
 // Lagre og hente fra localStorage
 export function save(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, JSON.stringify(value)); 
 }
 
 export function load(key) {
@@ -21,46 +21,44 @@ export function load(key) {
 // Få API-nøkkel
 export async function getApiKey() {
     try {
-        const response = await fetch(`${API_BASE}${API_AUTH}${API_KEY_URL}`, {
-            method: "POST",
+        const response = await fetch(API_BASE + API_AUTH + API_KEY_URL, {
+            method: "POST", 
             headers: {
                 "content-type": "application/json",
                 authorization: `Bearer ${load("Token")}`,
-                "X-Noroff-API-Key": API_KEY, 
             },
             body: JSON.stringify({ name: "test key" })
         });
         const data = await response.json();
-        console.log(data);  
+        console.log(data);  // Logg API-nøkkel for testing
     } catch (error) {
         console.error('Error fetching API Key', error);
     }
 }
 
-// Funksjon for å registrere ny bruker
+// Funksjon for å registrere ny bruker med 1000 kreditter
 export async function register(name, email, password) {
-    const response = await fetch(`${API_BASE}${API_AUTH}${API_REGISTER}`, {
-        headers: { 
-            "Content-Type": "application/json",
-            "X-Noroff-API-Key": API_KEY, 
-        },
+    const response = await fetch(API_BASE + API_AUTH + API_REGISTER, {
+        headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify({ name, email, password }),
     });
 
     if (response.ok) {
-        return await response.json();
+        const data = await response.json();
+        console.log("Bruker registrert:", data);
+
+        // Tildel 1000 kreditter til brukeren
+        await updateUserCredits(data.name, 1000);
+        return data;
     }
     throw new Error("Failed to register account");
 }
 
-// Logg inn bruker
+// Logg inn bruker og omdiriger til profilside
 export async function login(email, password) {
-    const response = await fetch(`${API_BASE}${API_AUTH}${API_LOGIN}`, {
-        headers: { 
-            "Content-Type": "application/json",
-            "X-Noroff-API-Key": API_KEY, 
-        },
+    const response = await fetch(API_BASE + API_AUTH + API_LOGIN, {
+        headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify({ email, password }),
     });
@@ -69,27 +67,107 @@ export async function login(email, password) {
         const { accessToken, ...profile } = (await response.json()).data;
         save("Token", accessToken);
         save("Profile", profile);
-        window.location.href = "/pages/profile.html"; 
+        window.location.href = "/pages/profile.html";  // Omdiriger til profilsiden etter innlogging
         return profile;
     }
 
     throw new Error("Failed to login");
 }
 
-// Håndter innlogging og registrering
-export async function onAuth(event) {
-    event.preventDefault();
-    const form = event.target;
+// Oppdater brukerens kreditter etter registrering
+async function updateUserCredits(username, credits) {
+    try {
+        const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${load("Token")}`,
+                "X-Noroff-API-Key": API_KEY,
+            },
+            body: JSON.stringify({ credits }),
+        });
 
-    const name = form.elements['registerName']?.value || "";
-    const email = form.elements['loginEmail']?.value || form.elements['registerEmail']?.value;
-    const password = form.elements['loginPassword']?.value || form.elements['registerPassword']?.value;
+        if (!response.ok) {
+            throw new Error(`Kunne ikke oppdatere kreditter: ${response.status}`);
+        }
 
-    if (event.submitter.textContent.trim() === "Log In") {
-        await login(email, password);
-    } else {
-        await register(name, email, password);
-        await login(email, password);  
+        const result = await response.json();
+        console.log('Kreditter oppdatert:', result);
+    } catch (error) {
+        console.error("Feil ved oppdatering av kreditter:", error);
+    }
+}
+
+// Hent brukerens kreditter
+async function fetchUserCredits(username) {
+    try {
+        const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
+            headers: {
+                "Authorization": `Bearer ${load("Token")}`,
+                "X-Noroff-API-Key": API_KEY,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Kunne ikke hente kreditter: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Brukerkreditter:', result);
+        return result.data.credits;
+    } catch (error) {
+        console.error("Feil ved henting av kreditter:", error);
+    }
+}
+
+// Oppdater kredittvisning på profilsiden
+async function updateCreditDisplay() {
+    const profile = load("Profile");
+    const username = profile?.name;
+
+    if (username) {
+        const credits = await fetchUserCredits(username);
+        document.getElementById("profileCredits").textContent = `Credits: ${credits}`;
+    }
+}
+
+// Oppdater visning av bio på profilsiden
+async function updateBioDisplay() {
+    const profile = load("Profile");
+    const bio = profile?.bio || "No bio available";
+    document.getElementById("profileBio").textContent = bio;
+}
+
+// Oppdater avatar funksjon
+async function updateAvatar(avatarUrl) {
+    const profile = load("Profile");
+    const username = profile?.name;
+    
+    if (!username) {
+        console.error("No username found in profile.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/auction/profiles/${username}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${load("Token")}`,
+                "X-Noroff-API-Key": API_KEY,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ avatar: { url: avatarUrl, alt: "User Avatar" } }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error updating avatar: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Avatar updated:', result);
+        document.getElementById("avatarImage").src = avatarUrl;
+    } catch (error) {
+        console.error("Error updating avatar:", error);
     }
 }
 
@@ -107,17 +185,57 @@ export function setAuthListeners() {
     }
 }
 
+// Håndter innlogging og registrering
+export async function onAuth(event) {
+    event.preventDefault(); 
+    const form = event.target;
+
+    const name = form.elements['registerName']?.value || "";
+    const email = form.elements['loginEmail']?.value || form.elements['registerEmail']?.value;
+    const password = form.elements['loginPassword']?.value || form.elements['registerPassword']?.value;
+
+    if (event.submitter.textContent.trim() === "Log In") {
+        await login(email, password);
+    } else {
+        await register(name, email, password);
+        await login(email, password);  // Logg inn brukeren etter registrering
+    }
+}
+
+// Log out-funksjon og andre nødvendige funksjoner
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutButton = document.getElementById("logoutButton");
+    const updateAvatarButton = document.getElementById("updateAvatarButton");
+
+    if (logoutButton) {
+        logoutButton.addEventListener("click", () => {
+            localStorage.removeItem("Token");
+            localStorage.removeItem("Profile");
+            window.location.href = "/index.html"; 
+        });
+    }
+
+    // Oppdater avatar
+    if (updateAvatarButton) {
+        updateAvatarButton.addEventListener("click", () => {
+            const avatarUrl = document.getElementById("avatarUrlInput").value;
+            updateAvatar(avatarUrl);
+        });
+    }
+
+    // Andre funksjoner som skal kjøre når DOM-en er lastet
+    setAuthListeners(); // Legg til event listeners for autentisering
+    updateCreditDisplay();
+    updateBioDisplay();
+});
+
 // listings.js - Hente og vise alle auksjoner
 export async function fetchAndDisplayListings() {
     try {
-        const response = await fetch(ALL_LISTINGS_URL, {
-            headers: {
-                "X-Noroff-API-Key": API_KEY, 
-            }
-        });
+        const response = await fetch(ALL_LISTINGS_URL);
         const result = await response.json();
 
-        console.log(result);  
+        console.log(result);  // Logg responsen for å se strukturen
 
         const listings = result.data || result;
         if (Array.isArray(listings)) {
@@ -126,7 +244,7 @@ export async function fetchAndDisplayListings() {
                 throw new Error('Element with id "auction-list" not found in the DOM');
             }
 
-            auctionList.innerHTML = ''; 
+            auctionList.innerHTML = ''; // Tøm eksisterende innhold
 
             listings.forEach(listing => {
                 const auctionCard = document.createElement('div');
@@ -155,53 +273,49 @@ export async function fetchAndDisplayListings() {
 
 // listing-details.js - Vise detaljene for en auksjon
 const urlParams = new URLSearchParams(window.location.search);
-const listingId = urlParams.get('id');
+const listingId = urlParams.get('id'); 
 
 if (listingId) {
     const url = `${API_BASE}${API_AUCTION}${API_LISTINGS_BASE}/${listingId}?_seller=true&_bids=true`;
 
-    fetch(url, {
-        headers: {
-            "X-Noroff-API-Key": API_KEY, 
-        }
-    })
-    .then(response => response.json())
-    .then(listing => {
-        const titleElement = document.querySelector('.listing-title');
-        if (titleElement) {
-            titleElement.textContent = listing.title;
-        }
+    fetch(url)
+        .then(response => response.json())
+        .then(listing => {
+            const titleElement = document.querySelector('.listing-title');
+            if (titleElement) {
+                titleElement.textContent = listing.title;
+            }
 
-        const imageElement = document.querySelector('.listing-image');
-        if (imageElement) {
-            imageElement.src = (listing.media && listing.media.length > 0)
-                ? listing.media[0].url
-                : '/images/placeholder.jpg';
-            imageElement.alt = (listing.media && listing.media.length > 0)
-                ? listing.media[0].alt || listing.title
-                : 'No image available';
-        }
+            const imageElement = document.querySelector('.listing-image');
+            if (imageElement) {
+                imageElement.src = (listing.media && listing.media.length > 0) 
+                    ? listing.media[0].url 
+                    : '/images/placeholder.jpg';
+                imageElement.alt = (listing.media && listing.media.length > 0) 
+                    ? listing.media[0].alt || listing.title 
+                    : 'No image available';
+            }
 
-        const descriptionElement = document.querySelector('.listing-description');
-        if (descriptionElement) {
-            descriptionElement.textContent = listing.description || 'No description available.';
-        }
+            const descriptionElement = document.querySelector('.listing-description');
+            if (descriptionElement) {
+                descriptionElement.textContent = listing.description || 'No description available.';
+            }
 
-        const sellerInfoElement = document.querySelector('.seller-info');
-        if (sellerInfoElement) {
-            sellerInfoElement.textContent = listing.seller ? `Seller: ${listing.seller.name}` : 'Seller info not available';
-        }
+            const sellerInfoElement = document.querySelector('.seller-info');
+            if (sellerInfoElement) {
+                sellerInfoElement.textContent = listing.seller ? `Seller: ${listing.seller.name}` : 'Seller info not available';
+            }
 
-        const bidsInfoElement = document.querySelector('.bids-info');
-        if (bidsInfoElement) {
-            bidsInfoElement.textContent = listing.bids && listing.bids.length > 0
-                ? listing.bids.map(bid => `Bid by ${bid.bidder.name}: ${bid.amount}`).join(', ')
-                : 'No bids available.';
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching the listing details:', error);
-    });
+            const bidsInfoElement = document.querySelector('.bids-info');
+            if (bidsInfoElement) {
+                bidsInfoElement.textContent = listing.bids && listing.bids.length > 0
+                    ? listing.bids.map(bid => `Bid by ${bid.bidder.name}: ${bid.amount}`).join(', ')
+                    : 'No bids available.';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching the listing details:', error);
+        });
 } else {
     const titleElement = document.querySelector('.listing-title');
     if (titleElement) {
@@ -213,20 +327,3 @@ if (listingId) {
         descriptionElement.textContent = 'Oops! An invalid listing ID.';
     }
 }
-
-// Log out-funksjon
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutButton = document.getElementById("logoutButton");
-    if (logoutButton) {
-        logoutButton.addEventListener("click", () => {
-            localStorage.removeItem("Token");
-            localStorage.removeItem("Profile");
-            window.location.href = "/index.html";
-        });
-    }
-
-    setAuthListeners();
-    fetchAndDisplayListings();
-    getApiKey();  
-});
-
