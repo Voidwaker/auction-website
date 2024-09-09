@@ -1,70 +1,71 @@
 import { API_BASE } from "../constants.mjs";
 import { load } from "../storage/storage.mjs";
 
-export async function fetchAuctionBids(listingId) {
+const urlParams = new URLSearchParams(window.location.search);
+const listingId = urlParams.get("id");
+
+export async function fetchAuctionDetails() {
     try {
-        const response = await fetch(`${API_BASE}/auction/listings/${listingId}/bids`, {
+        const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_bids=true&_seller=true`, {
             headers: {
                 "Authorization": `Bearer ${load("Token")}`,
                 "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
-            },
+            }
         });
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch bids");
+        const listing = await response.json();
+
+        document.querySelector('.listing-title').textContent = listing.title;
+        document.querySelector('.listing-description').textContent = listing.description;
+        document.querySelector('.listing-image').src = listing.media?.[0]?.url || "/images/placeholder.jpg";
+
+        updateBidDisplay(listing.bids);
+    } catch (error) {
+        console.error("Error fetching auction details:", error);
+    }
+}
+
+export async function updateBidDisplay(bids) {
+    const bidsElement = document.querySelector('.bids-info');
+
+    if (bids && bids.length > 0) {
+        bidsElement.innerHTML = bids.map(bid => `<p>${bid.bidder.name} bød ${bid.amount}</p>`).join('');
+    } else {
+        bidsElement.textContent = "No bids available.";
+    }
+}
+
+export async function placeBid(bidAmount) {
+    try {
+        const amount = Number(bidAmount);
+
+        if (isNaN(amount)) {
+            throw new Error("Invalid bid amount. Please enter a valid number.");
         }
 
-        const result = await response.json();
-        return result.data; 
-    } catch (error) {
-        console.error("Error fetching bids:", error);
-    }
-}
-
-export async function updateBidDisplay(listingId) {
-    const bids = await fetchAuctionBids(listingId);
-    const bidsElement = document.querySelector(".bids-info");
-
-    if (bids.length === 0) {
-        bidsElement.textContent = "Ingen bud tilgjengelig.";
-        return;
-    }
-
-    let bidsHtml = `<ul class="list-group">`;
-    bids.forEach(bid => {
-        bidsHtml += `
-            <li class="list-group-item">
-                Budgiver: ${bid.bidder.name} - Beløp: ${bid.amount} - Dato: ${new Date(bid.created).toLocaleString()}
-            </li>
-        `;
-    });
-    bidsHtml += `</ul>`;
-
-    bidsElement.innerHTML = bidsHtml;
-}
-
-export async function placeBid(listingId, bidAmount) {
-    try {
         const response = await fetch(`${API_BASE}/auction/listings/${listingId}/bids`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${load("Token")}`,
                 "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({ amount: bidAmount }),
+            body: JSON.stringify({
+                amount: amount, 
+            }),
         });
 
         if (!response.ok) {
-            const responseData = await response.json();
-            console.error("Server error:", responseData);
             throw new Error("Failed to place bid");
         }
 
-        alert("Bud lagt inn!");
-        return await response.json();
+        const result = await response.json();
+        alert("Bid placed successfully!");
+        updateBidDisplay(result.bids);
     } catch (error) {
         console.error("Error placing bid:", error);
     }
 }
+
+
 
