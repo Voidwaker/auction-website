@@ -31,6 +31,7 @@
     </header>
     <div class="container mt-5">
         <div class="row">
+            <!-- Profil Sidebar -->
             <div class="col-md-4">
                 <div class="profile-sidebar">
                     <div class="profile-avatar">
@@ -49,12 +50,38 @@
                 </div>
             </div>
 
+            <!-- Hovedinnhold -->
             <div class="col-md-8">
                 <h2>Welcome to your profile</h2>
+
+                <!-- Skjema for å opprette auksjon -->
+                <div class="create-auction mt-5">
+                    <h3>Create Auction</h3>
+                    <form id="createAuctionForm">
+                        <div class="mb-3">
+                            <label for="auctionTitle" class="form-label">Auction Title</label>
+                            <input type="text" class="form-control" id="auctionTitle" placeholder="Enter auction title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="auctionDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="auctionDescription" rows="3" placeholder="Enter auction description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="auctionEndDate" class="form-label">End Date</label>
+                            <input type="datetime-local" class="form-control" id="auctionEndDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="auctionMedia" class="form-label">Media URL (optional)</label>
+                            <input type="url" class="form-control" id="auctionMedia" placeholder="Enter media URL">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Auction</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </body>
 </html>
+
 
 
