@@ -1,7 +1,6 @@
 import { load } from "../storage/storage.mjs";
 import { API_BASE } from "../constants.mjs";
 
-// Oppdater kredittvisning på profilsiden
 export async function updateCreditDisplay() {
     const profile = load("Profile");
     const username = profile?.name;
@@ -18,7 +17,6 @@ export async function updateCreditDisplay() {
     }
 }
 
-// Oppdater visning av bio på profilsiden
 export async function updateBioDisplay() {
     const profile = load("Profile");
     const bio = profile?.bio || "No bio available";
@@ -31,7 +29,6 @@ export async function updateBioDisplay() {
     }
 }
 
-// Oppdater visning av brukernavn på profilsiden
 export function updateProfileName() {
     const profile = load("Profile");
     const username = profile?.name || "Unknown User";
@@ -44,7 +41,6 @@ export function updateProfileName() {
     }
 }
 
-// Funksjon for å opprette en auksjon
 export async function createAuction(title, description, endDate, mediaUrl) {
     const token = load("Token");
 
@@ -81,7 +77,6 @@ export async function createAuction(title, description, endDate, mediaUrl) {
     }
 }
 
-// Legg til event listener for auksjonsoppretting på profilsiden
 const createAuctionForm = document.getElementById("createAuctionForm");
 if (createAuctionForm) {
     createAuctionForm.addEventListener("submit", async (event) => {

@@ -1,7 +1,7 @@
 export const API_KEY = import.meta.env.VITE_API_KEY;
 export const API_BASE = import.meta.env.VITE_API_BASE;
 
-console.log(import.meta.env); // Dette vil vise alle tilgjengelige miljøvariabler i konsollen.
+console.log(import.meta.env);
 
 
 export const API_AUTH = "/auth";
