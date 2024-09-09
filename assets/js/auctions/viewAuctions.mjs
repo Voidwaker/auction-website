@@ -1,39 +1,41 @@
-fetch('https://v2.api.noroff.dev/auction/listings')
-  .then(response => response.json())
-  .then(listings => {
-    const carouselInner = document.getElementById("carouselItems");
+// viewAuctions.mjs
+import { ALL_LISTINGS_URL } from "../constants.mjs";
 
-    listings.forEach((listing, index) => {
-      
-     
-      const carouselItem = document.createElement("div");
+export async function fetchAndDisplayListings() {
+    try {
+        const response = await fetch(ALL_LISTINGS_URL);
+        const result = await response.json();
 
-      
-      if (index === 0) {
-        carouselItem.classList.add("carousel-item", "active");
-      } else {
-        carouselItem.classList.add("carousel-item");
-      }
+        const listings = result.data || result;
+        if (Array.isArray(listings)) {
+            const auctionList = document.getElementById('auction-list');
+            if (!auctionList) {
+                throw new Error('Element with id "auction-list" not found in the DOM');
+            }
 
-    
-      if (listing.media.length > 0) {
-        const img = document.createElement("img");
-        img.src = listing.media[0];
-        img.alt = listing.title || "Auction image";
-        img.classList.add("d-block", "w-100");
+            auctionList.innerHTML = '';  // Clear existing content
 
-        carouselItem.appendChild(img);
-      }
+            listings.forEach(listing => {
+                const auctionCard = document.createElement('div');
+                auctionCard.classList.add('col-md-4', 'mb-4');
 
-      const title = document.createElement("div");
-      title.classList.add("carousel-caption", "d-none", "d-md-block");
-      title.innerHTML = `<h5>${listing.title}</h5>`;
-      
-      carouselItem.appendChild(title);
+                auctionCard.innerHTML = `
+                    <div class="card h-100">
+                        <img src="${listing.media.length > 0 ? listing.media[0].url : '/images/placeholder.jpg'}" class="card-img-top" alt="${listing.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${listing.title}</h5>
+                            <p class="card-text">${listing.description || 'No description available.'}</p>
+                            <a href="/pages/listing-details.html?id=${listing.id}" class="btn btn-primary">View Auction</a>
+                        </div>
+                    </div>
+                `;
 
-      carouselInner.appendChild(carouselItem);
-    });
-  })
-  .catch(error => {
-    console.error('Error fetching the API', error); 
-  });
+                auctionList.appendChild(auctionCard);
+            });
+        } else {
+            console.error('Listings is not an array:', listings);
+        }
+    } catch (error) {
+        console.error('Error fetching the listings', error);
+    }
+}

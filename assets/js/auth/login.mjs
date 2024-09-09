@@ -1,20 +1,22 @@
-import { API_BASE, API_AUTH, API_LOGIN } from "../constants.mjs";
+// login.mjs
 import { save } from "../storage/storage.mjs";
+import { API_BASE, API_LOGIN } from "../constants.mjs"; //"../vendor/constants.mjs"
 
 export async function login(email, password) {
-    const response = await fetch(API_BASE + API_AUTH + API_LOGIN, {
-        headers: {
-            "Content-Type": "application/json",
-        },
+    const response = await fetch(`${API_BASE}${API_LOGIN}`, {
+        headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify({ email, password }),
     });
 
     if (response.ok) {
-        const { accessToken, ...profile } = await response.json().data;
+        const { accessToken, ...profile } = (await response.json()).data;
         save("Token", accessToken);
-        save("profile", profile);
+        save("Profile", profile);
+        window.location.href = "/pages/profile.html";  // Omdiriger til profilsiden etter innlogging
         return profile;
     }
+
     throw new Error("Failed to login");
 }
+

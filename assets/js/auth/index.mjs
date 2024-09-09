@@ -37,11 +37,11 @@ export async function onAuth(event) {
 }
 
 export function setAuthListener() {
-    // Lytt etter at DOM-en er lastet inn før vi legger til event listeners
+    
     document.addEventListener("DOMContentLoaded", () => {
         const authForm = document.forms.auth;
 
-        // Debugging for å sjekke om skjemaet finnes
+        
         console.log("Auth form found:", authForm);
 
         if (authForm) {

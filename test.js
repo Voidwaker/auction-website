@@ -37,22 +37,43 @@ export async function getApiKey() {
 }
 
 // Funksjon for å registrere ny bruker med 1000 kreditter
-export async function register(name, email, password) {
-    const response = await fetch(API_BASE + API_AUTH + API_REGISTER, {
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-        body: JSON.stringify({ name, email, password }),
-    });
+export async function register(name, email, password, bio, avatarUrl) {
+    const requestBody = {
+        name,
+        email,
+        password,
+        bio: bio || '', // Legg til bio hvis den er oppgitt, ellers tom
+    };
 
-    if (response.ok) {
+    // Inkluder avatar-URL hvis den er oppgitt
+    if (avatarUrl) {
+        requestBody.avatar = {
+            url: avatarUrl,
+            alt: "User Avatar"
+        };
+    }
+
+    try {
+        const response = await fetch(API_BASE + API_AUTH + API_REGISTER, {
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Registration failed:", errorData);
+            throw new Error("Failed to register account");
+        }
+
         const data = await response.json();
         console.log("Bruker registrert:", data);
-
-        // Tildel 1000 kreditter til brukeren
         await updateUserCredits(data.name, 1000);
         return data;
+    } catch (error) {
+        console.error("Feil ved registrering:", error);
+        throw error;
     }
-    throw new Error("Failed to register account");
 }
 
 // Logg inn bruker og omdiriger til profilside
@@ -127,7 +148,13 @@ async function updateCreditDisplay() {
 
     if (username) {
         const credits = await fetchUserCredits(username);
-        document.getElementById("profileCredits").textContent = `Credits: ${credits}`;
+        const creditElement = document.getElementById("profileCredits");
+        
+        if (creditElement) {
+            creditElement.textContent = `Credits: ${credits}`;
+        } else {
+            console.error("Element with id 'profileCredits' not found.");
+        }
     }
 }
 
@@ -135,7 +162,13 @@ async function updateCreditDisplay() {
 async function updateBioDisplay() {
     const profile = load("Profile");
     const bio = profile?.bio || "No bio available";
-    document.getElementById("profileBio").textContent = bio;
+    const bioElement = document.getElementById("profileBio");
+
+    if (bioElement) {
+        bioElement.textContent = bio;
+    } else {
+        console.error("Element with id 'profileBio' not found or no bio available.");
+    }
 }
 
 // Oppdater avatar funksjon
@@ -164,7 +197,7 @@ async function updateAvatar(avatarUrl) {
         }
 
         const result = await response.json();
-        console.log('Avatar updated:', result);
+        console.log('Avatar oppdatert:', result);
         document.getElementById("avatarImage").src = avatarUrl;
     } catch (error) {
         console.error("Error updating avatar:", error);
@@ -191,13 +224,15 @@ export async function onAuth(event) {
     const form = event.target;
 
     const name = form.elements['registerName']?.value || "";
-    const email = form.elements['loginEmail']?.value || form.elements['registerEmail']?.value;
+    const email = form.elements['registerEmail']?.value || form.elements['loginEmail']?.value;
     const password = form.elements['loginPassword']?.value || form.elements['registerPassword']?.value;
+    const bio = form.elements['registerBio']?.value || "";  // Hent bio
+    const avatarUrl = form.elements['registerAvatarUrl']?.value || "";  // Hent avatar-URL
 
     if (event.submitter.textContent.trim() === "Log In") {
         await login(email, password);
     } else {
-        await register(name, email, password);
+        await register(name, email, password, bio, avatarUrl);
         await login(email, password);  // Logg inn brukeren etter registrering
     }
 }
@@ -234,17 +269,16 @@ export async function fetchAndDisplayListings() {
     try {
         const response = await fetch(ALL_LISTINGS_URL);
         const result = await response.json();
-
-        console.log(result);  // Logg responsen for å se strukturen
-
+        
         const listings = result.data || result;
+        
         if (Array.isArray(listings)) {
             const auctionList = document.getElementById('auction-list');
             if (!auctionList) {
                 throw new Error('Element with id "auction-list" not found in the DOM');
             }
 
-            auctionList.innerHTML = ''; // Tøm eksisterende innhold
+            auctionList.innerHTML = '';  // Fjern eksisterende innhold
 
             listings.forEach(listing => {
                 const auctionCard = document.createElement('div');
@@ -261,7 +295,7 @@ export async function fetchAndDisplayListings() {
                     </div>
                 `;
 
-                auctionList.appendChild(auctionCard);
+                auctionList.appendChild(auctionCard);  // Legg til auksjonskortet i containeren
             });
         } else {
             console.error('Listings is not an array:', listings);
@@ -270,6 +304,7 @@ export async function fetchAndDisplayListings() {
         console.error('Error fetching the listings', error);
     }
 }
+
 
 // listing-details.js - Vise detaljene for en auksjon
 const urlParams = new URLSearchParams(window.location.search);
