@@ -1,4 +1,3 @@
-// register.mjs
 import { save } from "../storage/storage.mjs";
 import { API_BASE, API_REGISTER } from "../constants.mjs";
 import { updateUserCredits } from "../profiles/editProfiles.mjs";

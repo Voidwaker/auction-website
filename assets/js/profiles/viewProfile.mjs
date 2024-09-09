@@ -1,4 +1,3 @@
-// viewProfile.mjs
 import { load } from "../storage/storage.mjs";
 import { fetchUserCredits } from "./editProfiles.mjs";
 
@@ -30,3 +29,14 @@ export async function updateBioDisplay() {
     }
 }
 
+export function updateProfileName() {
+    const profile = load("Profile");
+    const username = profile?.name || "Unknown User";
+    const nameElement = document.getElementById("profileName");
+    
+    if (nameElement) {
+        nameElement.textContent = username;
+    } else {
+        console.error("Element with id 'profileName' not found.");
+    }
+}

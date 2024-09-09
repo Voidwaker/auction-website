@@ -1,10 +1,9 @@
-import { login } from "./assets/js/auth/login.mjs";//.//auth/login.mjs
-import { register } from "./assets/js/auth/register.mjs"; //./auth/register.mjs
-import { logout } from "./assets/js/auth/logout.mjs"; //./auth/logout.mjs
-import { updateCreditDisplay, updateBioDisplay } from "./assets/js/profiles/viewProfile.mjs"; //./profiles/viewProfile.mjs
-import { fetchAndDisplayListings } from "./assets/js/auctions/viewAuctions.mjs";//./auctions/viewAuctions.mjs
+import { login } from "./assets/js/auth/login.mjs";
+import { register } from "./assets/js/auth/register.mjs"; 
+import { logout } from "./assets/js/auth/logout.mjs"; 
+import { updateCreditDisplay, updateBioDisplay, updateProfileName } from "./assets/js/profiles/viewProfile.mjs"; 
+import { fetchAndDisplayListings } from "./assets/js/auctions/viewAuctions.mjs";
 
-// Event listener for login form
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (event) => {
@@ -15,7 +14,6 @@ if (loginForm) {
     });
 }
 
-// Event listener for register form
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
     registerForm.addEventListener("submit", async (event) => {
@@ -29,19 +27,17 @@ if (registerForm) {
     });
 }
 
-// Event listener for logout button
 const logoutButton = document.getElementById("logoutButton");
 if (logoutButton) {
     logoutButton.addEventListener("click", logout);
 }
 
-// Oppdater visning av kreditt og bio når profilen lastes inn
 if (window.location.pathname.includes("/profile.html")) {
     updateCreditDisplay();
     updateBioDisplay();
+    updateProfileName(); 
 }
 
-// Fetch og vis alle auksjoner på auctions.html
 if (window.location.pathname.includes("/auctions.html")) {
     fetchAndDisplayListings();
 }

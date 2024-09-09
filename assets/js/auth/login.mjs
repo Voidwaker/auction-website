@@ -1,6 +1,5 @@
-// login.mjs
 import { save } from "../storage/storage.mjs";
-import { API_BASE, API_LOGIN } from "../constants.mjs"; //"../vendor/constants.mjs"
+import { API_BASE, API_LOGIN } from "../constants.mjs";
 
 export async function login(email, password) {
     const response = await fetch(`${API_BASE}${API_LOGIN}`, {
@@ -13,7 +12,7 @@ export async function login(email, password) {
         const { accessToken, ...profile } = (await response.json()).data;
         save("Token", accessToken);
         save("Profile", profile);
-        window.location.href = "/pages/profile.html";  // Omdiriger til profilsiden etter innlogging
+        window.location.href = "/pages/profile.html";
         return profile;
     }
 
