@@ -28,10 +28,8 @@
             </div>
         </nav>
     </header>
-
     <div class="container mt-5">
         <h1 class="text-center mb-4 listing-title">Auction Title</h1>
-        
         <div class="row">
             <div class="col-md-6">
                 <img src="/images/placeholder.jpg" class="img-fluid listing-image" alt="Auction Image">
@@ -42,13 +40,15 @@
                 <h3>Seller Information</h3>
                 <p class="seller-info">Loading seller info...</p>
                 <h4>Bids</h4>
-                <p class="bids-info">Loading bids...</p>
-            </div>
-        </div>
-        
-        <div class="row mt-4">
-            <div class="col text-center">
-                <a href="/pages/auctions.html" class="btn btn-secondary">Back to Auctions</a>
+                <div class="bids-info">Loading bids...</div>
+                <h4>Place a bid</h4>
+                <form id="placeBidForm">
+                    <div class="form-group mb-3">
+                        <label for="bidAmount">Bid Amount:</label>
+                        <input type="number" id="bidAmount" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Place Bid</button>
+                </form>
             </div>
         </div>
     </div>
