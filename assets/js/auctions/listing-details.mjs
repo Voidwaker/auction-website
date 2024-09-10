@@ -1,55 +1,74 @@
 import { API_BASE } from "../constants.mjs";
 import { load } from "../storage/storage.mjs";
 
-export async function fetchAuctionDetails(auctionId) {
+export async function fetchAuctionDetails(listingId) {
     try {
-        const response = await fetch(`${API_BASE}/auction/listings/${auctionId}`);
-        const result = await response.json();
+        const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_seller=true&_bids=true`, {
+            headers: {
+                "Authorization": `Bearer ${load("Token")}`,
+                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+            },
+        });
 
-        if (result.errors) {
-            throw new Error(result.errors[0].message);
+        if (!response.ok) {
+            throw new Error(`Could not fetch auction details: ${response.status}`);
         }
 
-        document.querySelector('.listing-title').textContent = result.data.title || "No title available";
-        document.querySelector('.listing-description').textContent = result.data.description || "No description available";
-        
-        const imageElement = document.querySelector('.listing-image');
-        imageElement.src = result.data.media.length > 0 ? result.data.media[0].url : "/images/placeholder.jpg";
-        imageElement.alt = result.data.media.length > 0 ? result.data.media[0].alt : "No image available";
-
-        const sellerInfo = document.querySelector('.seller-info');
-        const seller = result.data.seller;
-        if (seller && seller.name) {
-            sellerInfo.innerHTML = `
-                <strong>Seller:</strong> ${seller.name}<br>
-                <strong>Email:</strong> ${seller.email || "No email available"}<br>
-                ${seller.bio ? `<strong>Bio:</strong> ${seller.bio}` : "No bio available"}
-            `;
-        } else {
-            sellerInfo.textContent = "Seller information not available";
-        }
-
-        const bidsInfo = document.querySelector('.bids-info');
-        const bids = result.data.bids;
-        if (bids && bids.length > 0) {
-            const highestBid = Math.max(...bids.map(bid => bid.amount));
-            const highestBidder = bids.find(bid => bid.amount === highestBid)?.bidder?.name || "Unknown bidder";
-
-            document.querySelector('.bids-info').innerHTML = `
-                <strong>Current highest bid:</strong> ${highestBid} by ${highestBidder}
-                <br><br>
-                <strong>Bid history:</strong><br>
-                ${bids.map(bid => `Bid: ${bid.amount} by ${bid.bidder.name}`).join('<br>')}
-            `;
-        } else {
-            bidsInfo.textContent = "No bids available.";
-        }
+        const data = await response.json();
+        updateAuctionDetails(data.data); 
+        return data.data;
     } catch (error) {
-        console.error("Error fetching auction details:", error);
+        console.error('Error fetching auction details:', error);
     }
 }
 
-export async function placeBid(auctionId, bidAmount) {
+function updateAuctionDetails(listing) {
+    const titleElement = document.querySelector('.listing-title');
+    const imageElement = document.querySelector('.listing-image');
+    const descriptionElement = document.querySelector('.listing-description');
+    const sellerInfoElement = document.querySelector('.seller-info');
+
+    titleElement.textContent = listing.title || "Auction Title";
+    descriptionElement.textContent = listing.description || "No description available.";
+    sellerInfoElement.textContent = listing.seller?.name || "No seller information available";
+
+    if (listing.media && listing.media.length > 0) {
+        imageElement.src = listing.media[0].url;
+        imageElement.alt = listing.media[0].alt || "Auction Image";
+    } else {
+        imageElement.src = "/images/placeholder.jpg"; 
+    }
+}
+
+export async function updateBidDisplay(listingId) {
+    try {
+        const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_bids=true`, {
+            headers: {
+                "Authorization": `Bearer ${load("Token")}`,
+                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Could not fetch bids: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const bids = data.data.bids;
+        const bidsInfoElement = document.querySelector('.bids-info');
+
+        if (bids.length === 0) {
+            bidsInfoElement.textContent = 'No bids available';
+        } else {
+            const highestBid = Math.max(...bids.map(bid => bid.amount));
+            bidsInfoElement.innerHTML = `Current highest bid: ${highestBid}`;
+        }
+    } catch (error) {
+        console.error('Error fetching bids:', error);
+    }
+}
+
+export async function placeBid(listingId, bidAmount) {
     const token = load("Token");
 
     if (!token) {
@@ -58,26 +77,56 @@ export async function placeBid(auctionId, bidAmount) {
     }
 
     try {
-        const response = await fetch(`${API_BASE}/auction/listings/${auctionId}/bids`, {
+        const currentHighestBid = await getCurrentHighestBid(listingId);
+
+        if (bidAmount <= currentHighestBid) {
+            alert(`Your bid must be higher than the current bid of ${currentHighestBid}`);
+            return;
+        }
+
+        const response = await fetch(`${API_BASE}/auction/listings/${listingId}/bids`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
                 "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
             },
-            body: JSON.stringify({
-                amount: parseFloat(bidAmount) 
-            }),
+            body: JSON.stringify({ amount: bidAmount }),
         });
 
         if (!response.ok) {
             throw new Error("Failed to place bid");
         }
 
-        const result = await response.json();
         alert("Bid placed successfully!");
-        return result;
+        await updateBidDisplay(listingId); 
     } catch (error) {
-        console.error("Error placing bid:", error);
+        console.error('Error placing bid:', error);
     }
 }
+
+async function getCurrentHighestBid(listingId) {
+    try {
+        const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_bids=true`, {
+            headers: {
+                "Authorization": `Bearer ${load("Token")}`,
+                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Could not fetch bids: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const bids = data.data.bids;
+        return bids.length > 0 ? Math.max(...bids.map(bid => bid.amount)) : 0;
+    } catch (error) {
+        console.error('Error fetching bids:', error);
+        return 0;
+    }
+}
+
+
+
+
