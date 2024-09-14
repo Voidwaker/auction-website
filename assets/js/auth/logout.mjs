@@ -6,10 +6,8 @@ export function logout() {
     localStorage.removeItem("Profile");
 
     console.log("Token and profile removed from localStorage");
-    
-    
     console.log(localStorage.getItem("Token"));  
     console.log(localStorage.getItem("Profile"));  
-    
-    window.location.href = "/index.html";
+
+    window.location.hash = "#/";
 }

@@ -33,9 +33,12 @@ export async function register(name, email, password, bio, avatarUrl) {
         const data = await response.json();
         console.log("Bruker registrert:", data);
         await updateUserCredits(data.name, 1000);
+
+        window.location.hash = "#/profile"; 
         return data;
     } catch (error) {
         console.error("Feil ved registrering:", error);
         throw error;
     }
 }
+
