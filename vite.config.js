@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  base: '/auction-website/', 
   build: {
     rollupOptions: {
       input: {
@@ -14,4 +15,5 @@ export default defineConfig({
     }
   }
 });
+
 
