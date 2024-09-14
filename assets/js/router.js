@@ -1,3 +1,8 @@
+import { fetchAndDisplayListings, filterAuctions } from './auctions/viewAuctions.mjs';
+import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
+import { logout } from './auth/logout.mjs';
+import { createAuction } from './auctions/createAuctions.mjs';
+
 function loadHomePage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
@@ -40,6 +45,19 @@ function loadRegistrationPage() {
             </div>
         </section>
     `;
+
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const bio = document.getElementById('registerBio').value;
+            const avatarUrl = document.getElementById('registerAvatarUrl').value;
+            await register(name, email, password, bio, avatarUrl);
+        });
+    }
 }
 
 function loadAuctionsPage() {
@@ -74,7 +92,6 @@ function loadProfilePage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
             <div class="row">
-                <!-- Profil Sidebar -->
                 <div class="col-md-4">
                     <div class="profile-sidebar">
                         <div class="profile-avatar">
@@ -182,5 +199,4 @@ function router() {
 }
 
 window.addEventListener('hashchange', router);
-
 window.addEventListener('load', router);
