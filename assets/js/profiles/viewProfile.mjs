@@ -78,4 +78,37 @@ export async function createAuction(title, description, endDate, mediaUrl) {
     }
 }
 
+export async function updateAvatar(newAvatarUrl) {
+    const token = load("Token");
+    const profile = load("Profile");
+
+    if (!token || !profile) {
+        alert("You need to be logged in to update your avatar.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/auction/profiles/${profile.name}/media`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+            },
+            body: JSON.stringify({ avatar: newAvatarUrl }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update avatar");
+        }
+
+        const result = await response.json();
+        alert("Avatar updated successfully!");
+        return result;
+    } catch (error) {
+        console.error("Error updating avatar:", error);
+    }
+}
+
+
 
