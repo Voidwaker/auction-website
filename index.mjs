@@ -63,7 +63,6 @@ if (window.location.pathname.includes("/listing-details.html")) {
 }
  */
 
-// Importer alle nødvendige moduler
 import { login } from "./assets/js/auth/login.mjs";
 import { register } from "./assets/js/auth/register.mjs";
 import { logout } from "./assets/js/auth/logout.mjs";
@@ -71,49 +70,7 @@ import { updateCreditDisplay, updateBioDisplay, updateProfileName } from "./asse
 import { fetchAndDisplayListings } from "./assets/js/auctions/viewAuctions.mjs";
 import { fetchAuctionDetails, updateBidDisplay, placeBid } from "./assets/js/auctions/listing-details.mjs";
 
-// Funksjon for å håndtere ruter
-function handleRoute() {
-    const path = window.location.pathname;
-
-    if (path === "/" || path === "/index.html") {
-        // Logikk for hjemmesiden (index)
-        console.log("Viser hjemmesiden");
-    }
-
-    if (path.includes("/profile.html")) {
-        // Profile-siden
-        updateCreditDisplay();
-        updateBioDisplay();
-        updateProfileName();
-    }
-
-    if (path.includes("/auctions.html")) {
-        // Auctions-siden
-        fetchAndDisplayListings();
-    }
-
-    if (path.includes("/listing-details.html")) {
-        // Hent listing-id fra URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const listingId = urlParams.get('id');
-
-        if (listingId) {
-            fetchAuctionDetails(listingId);
-            updateBidDisplay(listingId);
-
-            const placeBidForm = document.getElementById("placeBidForm");
-            if (placeBidForm) {
-                placeBidForm.addEventListener("submit", async (event) => {
-                    event.preventDefault();
-                    const bidAmount = parseFloat(document.getElementById("bidAmount").value);
-                    await placeBid(listingId, bidAmount);
-                });
-            }
-        }
-    }
-}
-
-// Logikk for login-form
+// Event listener for login form
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (event) => {
@@ -124,7 +81,7 @@ if (loginForm) {
     });
 }
 
-// Logikk for register-form
+// Event listener for register form
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
     registerForm.addEventListener("submit", async (event) => {
@@ -138,11 +95,39 @@ if (registerForm) {
     });
 }
 
-// Logikk for logout
+// Event listener for logout button
 const logoutButton = document.getElementById("logoutButton");
 if (logoutButton) {
     logoutButton.addEventListener("click", logout);
 }
 
-// Kall handleRoute for å aktivere ruter
-handleRoute();
+// Checking hash-based routes
+if (window.location.hash === "#/profile") {
+    updateCreditDisplay();
+    updateBioDisplay();
+    updateProfileName();
+}
+
+if (window.location.hash === "#/auctions") {
+    fetchAndDisplayListings();
+}
+
+if (window.location.hash.startsWith("#/listing-details")) {
+    const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
+    const listingId = urlParams.get('id');
+
+    if (listingId) {
+        fetchAuctionDetails(listingId);
+        updateBidDisplay(listingId);
+
+        const placeBidForm = document.getElementById("placeBidForm");
+        if (placeBidForm) {
+            placeBidForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const bidAmount = parseFloat(document.getElementById("bidAmount").value);
+                await placeBid(listingId, bidAmount);
+            });
+        }
+    }
+}
+
