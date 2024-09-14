@@ -25,7 +25,7 @@ function loadRegistrationPage() {
                         </div>
                         <div class="mb-3">
                             <label for="registerEmail" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="Enter email" required pattern="^[a-zA-Z0-9._%+-]+@stud\\.noroff\\.no$" title="Email must be a valid stud.noroff.no address">
+                            <input type="email" class="form-control" id="registerEmail" placeholder="Enter email" required>
                         </div>
                         <div class="mb-3">
                             <label for="registerPassword" class="form-label">Password</label>
@@ -45,19 +45,6 @@ function loadRegistrationPage() {
             </div>
         </section>
     `;
-
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const bio = document.getElementById('registerBio').value;
-            const avatarUrl = document.getElementById('registerAvatarUrl').value;
-            await register(name, email, password, bio, avatarUrl);
-        });
-    }
 }
 
 function loadAuctionsPage() {
@@ -72,11 +59,7 @@ function loadAuctionsPage() {
             <div class="row" id="auction-list">
             </div>
         </div>
-        <footer class="text-center mt-5">
-            <p>&copy; 2024 Auction Website</p>
-        </footer>
     `;
-
     fetchAndDisplayListings();
 
     const searchInput = document.getElementById('searchInput');
@@ -109,10 +92,8 @@ function loadProfilePage() {
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-8">
                     <h2>Welcome to your profile</h2>
-
                     <div class="create-auction mt-5">
                         <h3>Create Auction</h3>
                         <form id="createAuctionForm">
@@ -174,20 +155,14 @@ const routes = {
     '/': loadHomePage,
     '/auctions': loadAuctionsPage,
     '/profile': loadProfilePage,
-    '/registration': loadRegistrationPage,
-    '/listing-details/:id': (id) => loadListingDetailsPage(id),
+    '/registration': loadRegistrationPage
 };
 
 function router() {
     const path = location.hash.slice(1) || '/';
     const route = routes[path.split('/')[0]];
     if (route) {
-        if (path.startsWith('/listing-details')) {
-            const id = path.split('/')[2]; 
-            route(id);
-        } else {
-            route();
-        }
+        route();
     } else {
         document.getElementById('app').innerHTML = `
             <div class="container mt-5">
