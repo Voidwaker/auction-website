@@ -130,7 +130,7 @@ function router() {
 
     if (routes[path]) {
         console.log("Laster rute:", path);
-        routes[path]();  // Laster den korrekte ruten direkte basert på hash
+        routes[path](); 
     } else {
         console.log("Route not found:", path);
         document.getElementById('app').innerHTML = `

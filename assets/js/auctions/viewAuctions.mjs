@@ -5,7 +5,7 @@ export async function fetchAndDisplayListings() {
         const auctionList = document.getElementById('auction-list');
         if (!auctionList) {
             console.error('Element med id "auction-list" ikke funnet i DOM');
-            return;  // Avslutt hvis elementet ikke finnes
+            return;  
         }
 
         try {
@@ -39,7 +39,7 @@ export async function fetchAndDisplayListings() {
         } catch (error) {
             console.error('Feil ved henting av auksjoner:', error);
         }
-    }, 100);  // Kort forsinkelse for å sikre at DOM er klar
+    }, 100); 
 }
 
 export function filterAuctions(searchTerm) {
