@@ -2,6 +2,7 @@ import { fetchAndDisplayListings, filterAuctions } from './auctions/viewAuctions
 import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
 import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
+import { fetchAuctionDetails } from './auctions/listing-details.mjs'; // Import for å håndtere listing-details
 
 function loadHomePage() {
     document.getElementById('app').innerHTML = `
@@ -56,8 +57,7 @@ function loadAuctionsPage() {
                     <input type="text" id="searchInput" class="form-control" placeholder="Search auctions...">
                 </div>
             </div>
-            <div class="row" id="auction-list">
-            </div>
+            <div class="row" id="auction-list"></div>
         </div>
     `;
     fetchAndDisplayListings();
@@ -151,17 +151,32 @@ function loadProfilePage() {
     }
 }
 
+function loadListingDetailsPage(id) {
+    document.getElementById('app').innerHTML = `
+        <div class="container mt-5">
+            <h1>Auction Details</h1>
+            <!-- Auction details will be fetched and displayed here -->
+        </div>
+    `;
+    fetchAuctionDetails(id); 
+}
+
 const routes = {
     '/': loadHomePage,
     '/auctions': loadAuctionsPage,
     '/profile': loadProfilePage,
-    '/registration': loadRegistrationPage
+    '/registration': loadRegistrationPage,
+    '/listing-details/:id': (id) => loadListingDetailsPage(id) 
 };
 
 function router() {
     const path = location.hash.slice(1) || '/';
-    const route = routes[path.split('/')[0]];
-    if (route) {
+    const [routeBase, routeParam] = path.split('/');
+    const route = routes[`/${routeBase}`];
+
+    if (routeBase === 'listing-details' && routeParam) {
+        routes['/listing-details/:id'](routeParam); 
+    } else if (route) {
         route();
     } else {
         document.getElementById('app').innerHTML = `
