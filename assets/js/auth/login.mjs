@@ -14,7 +14,12 @@ export async function login(email, password) {
         const { accessToken, ...profile } = (await response.json()).data;
         save("Token", accessToken);
         save("Profile", profile);
- 
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+        if (modal) {
+            modal.hide();
+        }
+
         window.location.hash = "#/profile";
         
         return profile;
@@ -25,6 +30,7 @@ export async function login(email, password) {
 
     throw new Error("Failed to login");
 }
+
 
 
 
