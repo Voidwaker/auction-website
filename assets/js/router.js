@@ -37,7 +37,7 @@ function loadAuctionsPage() {
 
     setTimeout(() => {
         fetchAndDisplayListings();
-    }, 100); // Forsikrer oss om at DOM er lastet før vi prøver å oppdatere den
+    }, 100); 
 
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
