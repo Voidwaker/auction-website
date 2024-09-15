@@ -8,6 +8,12 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html')
       }
     }
+  },
+  define: {
+    'import.meta.env': {
+      VITE_API_KEY: JSON.stringify(process.env.VITE_API_KEY),
+      VITE_API_BASE: JSON.stringify(process.env.VITE_API_BASE),
+    },
   }
 });
 

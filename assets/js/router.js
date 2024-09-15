@@ -1,8 +1,7 @@
-import { fetchAndDisplayListings, filterAuctions } from './auctions/viewAuctions.mjs';
+import { fetchAndDisplayListings } from './auctions/viewAuctions.mjs';
 import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
 import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
-import { fetchAuctionDetails } from './auctions/listing-details.mjs';
 
 function loadHomePage() {
     document.getElementById('app').innerHTML = `
@@ -100,11 +99,25 @@ function loadProfilePage() {
     }
 }
 
+function loadAuctionsPage() {
+    document.getElementById('app').innerHTML = `
+        <div class="container mt-5">
+            <h1>Available Auctions</h1>
+            <div id="auction-list" class="list-group">
+                <!-- Auksjoner vil bli lagt til her -->
+            </div>
+        </div>
+    `;
+
+    fetchAndDisplayListings();
+}
+
 function router() {
     const path = location.hash.slice(1) || '/';
     const route = {
         '/': loadHomePage,
         '/profile': loadProfilePage,
+        '/auctions': loadAuctionsPage, 
     }[path];
 
     if (route) {

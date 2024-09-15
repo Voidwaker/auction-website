@@ -1,4 +1,4 @@
-import { API_BASE } from "../constants.mjs";
+import { API_BASE, API_KEY } from "../constants.mjs";
 import { load } from "../storage/storage.mjs";
 
 export async function createAuction(title, description, endDate, mediaUrl) {
@@ -15,7 +15,7 @@ export async function createAuction(title, description, endDate, mediaUrl) {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+                "X-Noroff-API-Key": API_KEY,
             },
             body: JSON.stringify({
                 title,
