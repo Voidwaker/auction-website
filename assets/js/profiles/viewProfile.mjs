@@ -33,6 +33,14 @@ export async function updateBioDisplay() {
 export function updateProfileName() {
     const profile = load("Profile");
     const username = profile?.name || "Unknown User";
+    const avatarImage = document.getElementById("avatarImage");
+    
+    const defaultAvatar = 'assets/images/standard-avatar.webp'; 
+
+    if (avatarImage) {
+        avatarImage.src = profile?.avatar || defaultAvatar;
+    }
+
     const nameElement = document.getElementById("profileName");
     
     if (nameElement) {
@@ -109,6 +117,7 @@ export async function updateAvatar(newAvatarUrl) {
         console.error("Error updating avatar:", error);
     }
 }
+
 
 
 
