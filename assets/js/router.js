@@ -1,66 +1,43 @@
 import { fetchAndDisplayListings, filterAuctions } from './auctions/viewAuctions.mjs';
-import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
+import { updateProfileName, updateBioDisplay, updateCreditDisplay } from './profiles/viewProfile.mjs';
 import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
 import { fetchAuctionDetails } from './auctions/listing-details.mjs';
 
 function loadHomePage() {
+    console.log("Laster hjemmesiden...");
     document.getElementById('app').innerHTML = `
-        <div class="container mt-5">
-            <h1>Welcome to Auction Website</h1>
-            <p>This is the homepage where users can explore the platform.</p>
-        </div>
-    `;
-}
-
-function loadRegistrationPage() {
-    document.getElementById('app').innerHTML = `
-        <section class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <h2 class="text-center">Register</h2>
-                    <form id="registerForm" name="registerForm">
-                        <div class="mb-3">
-                            <label for="registerName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="registerName" placeholder="Enter name" required pattern="^[a-zA-Z0-9_]+$" title="Name can only contain letters, numbers, and underscores">
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerEmail" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="Enter email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="registerPassword" placeholder="Password" required minlength="8">
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerBio" class="form-label">Bio</label>
-                            <textarea class="form-control" id="registerBio" placeholder="Tell us about yourself (max 160 characters)" maxlength="160"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerAvatarUrl" class="form-label">Avatar URL (optional)</label>
-                            <input type="url" class="form-control" id="registerAvatarUrl" placeholder="Enter avatar URL">
-                        </div>
-                        <button type="submit" class="btn btn-secondary">Register</button>
-                    </form>
-                </div>
+        <div class="container mt-5 text-center">
+            <h1>Velkommen til Auksjonsnettstedet</h1>
+            <p>Dette er hjemmesiden hvor brukere kan utforske plattformen.</p>
+            <div class="mt-4">
+                <!-- Knappene for innlogging og registrering -->
+                <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#loginModal">Logg inn</button>
+                <button class="btn btn-secondary btn-lg ms-3" data-bs-toggle="modal" data-bs-target="#registerModal">Registrer deg</button>
             </div>
-        </section>
+        </div>
     `;
 }
 
 function loadAuctionsPage() {
+    console.log("Laster auksjonssiden...");
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
-            <h1 class="text-center mb-4">All Auctions</h1>
+            <h1 class="text-center mb-4">Alle Auksjoner</h1>
             <div class="row mb-4">
                 <div class="col-md-8 offset-md-2">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search auctions...">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Søk i auksjoner...">
                 </div>
             </div>
-            <div class="row" id="auction-list"></div>
+            <div class="row" id="auction-list">
+                <!-- Auksjoner vil bli generert her -->
+            </div>
         </div>
     `;
-    fetchAndDisplayListings();
+
+    setTimeout(() => {
+        fetchAndDisplayListings();
+    }, 100); // Forsikrer oss om at DOM er lastet før vi prøver å oppdatere den
 
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
@@ -72,6 +49,7 @@ function loadAuctionsPage() {
 }
 
 function loadProfilePage() {
+    console.log("Laster profilside...");
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
             <div class="row">
@@ -94,28 +72,6 @@ function loadProfilePage() {
                 </div>
                 <div class="col-md-8">
                     <h2>Welcome to your profile</h2>
-                    <div class="create-auction mt-5">
-                        <h3>Create Auction</h3>
-                        <form id="createAuctionForm">
-                            <div class="mb-3">
-                                <label for="auctionTitle" class="form-label">Auction Title</label>
-                                <input type="text" class="form-control" id="auctionTitle" placeholder="Enter auction title" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="auctionDescription" class="form-label">Description</label>
-                                <textarea class="form-control" id="auctionDescription" rows="3" placeholder="Enter auction description" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="auctionEndDate" class="form-label">End Date</label>
-                                <input type="datetime-local" class="form-control" id="auctionEndDate" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="auctionMedia" class="form-label">Media URL (optional)</label>
-                                <input type="url" class="form-control" id="auctionMedia" placeholder="Enter media URL">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Create Auction</button>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>
@@ -124,41 +80,41 @@ function loadProfilePage() {
     updateProfileName();
     updateBioDisplay();
     updateCreditDisplay();
+}
 
-    const avatarButton = document.getElementById('updateAvatarButton');
-    if (avatarButton) {
-        avatarButton.addEventListener('click', () => {
-            const newAvatarUrl = document.getElementById('avatarUrlInput').value;
-            updateAvatar(newAvatarUrl);
-        });
-    }
-
-    const logoutButton = document.getElementById('logoutButton');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', logout);
-    }
-
-    const createAuctionForm = document.getElementById('createAuctionForm');
-    if (createAuctionForm) {
-        createAuctionForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const title = document.getElementById('auctionTitle').value;
-            const description = document.getElementById('auctionDescription').value;
-            const endDate = document.getElementById('auctionEndDate').value;
-            const mediaUrl = document.getElementById('auctionMedia').value;
-            await createAuction(title, description, endDate, mediaUrl);
-        });
-    }
+function loadRegistrationPage() {
+    console.log("Laster registreringsside...");
+    document.getElementById('app').innerHTML = `
+        <div class="container mt-5">
+            <h2>Registrer deg</h2>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="registerName" class="form-label">Navn</label>
+                    <input type="text" class="form-control" id="registerName" placeholder="Skriv inn navnet ditt" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerEmail" class="form-label">E-postadresse</label>
+                    <input type="email" class="form-control" id="registerEmail" placeholder="Skriv inn e-posten din" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerPassword" class="form-label">Passord</label>
+                    <input type="password" class="form-control" id="registerPassword" placeholder="Skriv inn passordet ditt" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrer deg</button>
+            </form>
+        </div>
+    `;
 }
 
 function loadListingDetailsPage(id) {
+    console.log("Laster auksjonsdetaljer...");
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
-            <h1>Auction Details</h1>
-            <!-- Auction details will be fetched and displayed here -->
+            <h1>Auksjonsdetaljer</h1>
+            <!-- Auksjonsdetaljer vil bli hentet og vist her -->
         </div>
     `;
-    fetchAuctionDetails(id); 
+    fetchAuctionDetails(id);
 }
 
 const routes = {
@@ -166,23 +122,21 @@ const routes = {
     '/auctions': loadAuctionsPage,
     '/profile': loadProfilePage,
     '/registration': loadRegistrationPage,
-    '/listing-details/:id': (id) => loadListingDetailsPage(id) 
 };
 
 function router() {
-    const path = location.hash.slice(1) || '/';
-    const [routeBase, routeParam] = path.split('/');
-    const route = routes[`/${routeBase}`];
+    const path = window.location.hash.slice(1) || '/';
+    console.log("Navigating to:", path);
 
-    if (routeBase === 'listing-details' && routeParam) {
-        routes['/listing-details/:id'](routeParam); 
-    } else if (route) {
-        route();
+    if (routes[path]) {
+        console.log("Laster rute:", path);
+        routes[path]();  // Laster den korrekte ruten direkte basert på hash
     } else {
+        console.log("Route not found:", path);
         document.getElementById('app').innerHTML = `
             <div class="container mt-5">
-                <h1>404 - Page not found</h1>
-                <p>The page you are looking for does not exist.</p>
+                <h1>404 - Siden finnes ikke</h1>
+                <p>Siden du leter etter eksisterer ikke.</p>
             </div>
         `;
     }
