@@ -2,7 +2,7 @@ import { fetchAndDisplayListings, filterAuctions } from './auctions/viewAuctions
 import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
 import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
-import { fetchAuctionDetails } from './auctions/listing-details.mjs'; // Import for å håndtere listing-details
+import { fetchAuctionDetails } from './auctions/listing-details.mjs';
 
 function loadHomePage() {
     document.getElementById('app').innerHTML = `

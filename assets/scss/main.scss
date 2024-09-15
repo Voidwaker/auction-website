@@ -32,3 +32,24 @@ body {
     }
   }
 }
+
+input::placeholder {
+  color: #6c757d; 
+  opacity: 1; 
+}
+
+input {
+  color: #212529; 
+}
+
+$placeholder-color: #6c757d;
+$text-color: #212529;
+
+input::placeholder {
+    color: $placeholder-color;
+    opacity: 1;
+}
+
+input {
+    color: $text-color;
+}
