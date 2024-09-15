@@ -53,3 +53,30 @@ input::placeholder {
 input {
     color: $text-color;
 }
+
+.modal .form-control {
+  color: #212529; 
+}
+
+.modal .form-label {
+  color: #212529; 
+}
+
+.modal input::placeholder {
+  color: #000000; 
+  opacity: 1; 
+}
+
+.modal .btn-primary {
+  background-color: #007bff;
+  color: #fff; 
+}
+
+.modal .btn-secondary {
+  background-color: #6c757d;
+  color: #fff; 
+}
+.modal-title {
+  color: #212529;
+  font-weight: bold; 
+}

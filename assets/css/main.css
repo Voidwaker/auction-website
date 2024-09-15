@@ -486,13 +486,6 @@ button,
 [type=reset],
 [type=submit] {
   -webkit-appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -511,7 +504,6 @@ textarea {
 }
 
 fieldset {
-  
   min-width: 0;
   padding: 0;
   margin: 0;
@@ -551,7 +543,6 @@ legend + * {
 
 [type=search] {
   -webkit-appearance: textfield;
-  appearance: textfield;
   outline-offset: -2px;
 }
 
@@ -11852,6 +11843,79 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+}
+body {
+  background-color: #343a40;
+}
+
+.profile-sidebar {
+  background-color: #212529;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+.profile-sidebar .profile-avatar img {
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+.profile-sidebar .profile-info {
+  margin-bottom: 20px;
+}
+.profile-sidebar .profile-info p {
+  font-size: 18px;
+}
+.profile-sidebar .profile-actions {
+  margin-top: 20px;
+}
+.profile-sidebar .profile-actions .btn {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+input::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+
+input {
+  color: #212529;
+}
+
+input::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+
+input {
+  color: #212529;
+}
+
+.modal .form-control {
+  color: #212529;
+}
+
+.modal .form-label {
+  color: #212529;
+}
+
+.modal input::placeholder {
+  color: #000000;
+  opacity: 1;
+}
+
+.modal .btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.modal .btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.modal-title {
+  color: #212529;
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=main.css.map */
