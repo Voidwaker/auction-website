@@ -8,8 +8,6 @@ export async function login(email, password) {
         body: JSON.stringify({ email, password }),
     });
 
-    console.log(response);
-
     if (response.ok) {
         const { accessToken, ...profile } = (await response.json()).data;
         save("Token", accessToken);
@@ -21,8 +19,6 @@ export async function login(email, password) {
         }
 
         window.location.hash = "#/profile";
-        
-        return profile;
     } else {
         const errorData = await response.json();
         console.error("Error response:", errorData);  
@@ -30,6 +26,7 @@ export async function login(email, password) {
 
     throw new Error("Failed to login");
 }
+
 
 
 
