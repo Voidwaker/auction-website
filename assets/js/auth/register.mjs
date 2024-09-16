@@ -9,7 +9,7 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         password,
         bio: bio || '', 
         avatar: avatarUrl ? { url: avatarUrl, alt: "User Avatar" } : undefined,
-        venueManager: venueManager // Optional field
+        venueManager: venueManager 
     };
 
     try {
@@ -28,10 +28,11 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         const data = await response.json();
         console.log("Bruker registrert:", data);
 
-        save("Profile", data.data);
+        save("Profile", data.data); 
+        save("Token", data.data.accessToken); 
 
         if (data.data.name) {
-            await updateUserCredits(data.data.name, 1000);
+            await updateUserCredits(data.data.name, 1000); 
         } else {
             console.error("Brukernavnet mangler i responsdataen.");
         }
@@ -43,6 +44,7 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         throw error;
     }
 }
+
 
 
 

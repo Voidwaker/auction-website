@@ -42,42 +42,6 @@ export function updateProfileName() {
     }
 }
 
-export async function createAuction(title, description, endDate, mediaUrl) {
-    const token = load("Token");
-
-    if (!token) {
-        alert("You need to be logged in to create an auction.");
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE}/auction/listings`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
-            },
-            body: JSON.stringify({
-                title,
-                description,
-                endsAt: endDate,
-                media: mediaUrl ? [mediaUrl] : [],
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to create auction");
-        }
-
-        const result = await response.json();
-        alert("Auction created successfully!");
-        return result;
-    } catch (error) {
-        console.error("Error creating auction:", error);
-    }
-}
-
 export async function updateAvatar(newAvatarUrl) {
     const token = load("Token");
     const profile = load("Profile");
@@ -93,9 +57,9 @@ export async function updateAvatar(newAvatarUrl) {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+                "X-Noroff-API-Key": API_KEY,
             },
-            body: JSON.stringify({ avatar: newAvatarUrl }),
+            body: JSON.stringify({ avatar: { url: newAvatarUrl, alt: "User Avatar" } }),
         });
 
         if (!response.ok) {

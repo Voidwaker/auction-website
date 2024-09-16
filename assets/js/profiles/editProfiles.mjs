@@ -7,7 +7,7 @@ export async function updateUserCredits(username, credits) {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${load("Token")}`,
+                "Authorization": `Bearer ${load("Token")}`, 
                 "X-Noroff-API-Key": API_KEY,
             },
             body: JSON.stringify({ credits }),
@@ -43,6 +43,7 @@ export async function fetchUserCredits(username) {
         console.error("Error fetching credits:", error);
     }
 }
+
 
 
 
