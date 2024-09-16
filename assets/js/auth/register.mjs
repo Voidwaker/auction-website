@@ -1,15 +1,16 @@
 import { save } from "../storage/storage.mjs";
 import { API_BASE, API_REGISTER } from "../constants.mjs";
 import { updateUserCredits } from "../profiles/editProfiles.mjs";
+import { login } from "./login.mjs"; 
 
 export async function register(name, email, password, bio, avatarUrl, venueManager = false) {
     const requestBody = {
         name,
         email,
         password,
-        bio: bio || '', 
+        bio: bio || '',
         avatar: avatarUrl ? { url: avatarUrl, alt: "User Avatar" } : undefined,
-        venueManager: venueManager 
+        venueManager: venueManager
     };
 
     try {
@@ -28,19 +29,13 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         const data = await response.json();
         console.log("Bruker registrert:", data);
 
-        if (data.accessToken) {
-            save("Token", data.accessToken);
-        } else {
-            console.error("Access token is missing from registration response.");
-        }
-
         save("Profile", data.data);
 
         if (data.data.name) {
-            await updateUserCredits(data.data.name, 1000);
-        } else {
-            console.error("Brukernavnet mangler i responsdataen.");
+            await updateUserCredits(data.data.name, 1000);  
         }
+
+        await login(data.data.email, password);  
 
         const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
         if (modal) {
@@ -54,6 +49,7 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         throw error;
     }
 }
+
 
 
 
