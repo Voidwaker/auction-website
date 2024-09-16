@@ -15,6 +15,7 @@ export async function login(email, password) {
         }
 
         const { accessToken, ...profile } = (await response.json()).data;
+
         save("Token", accessToken);
         save("Profile", profile);
 
@@ -30,6 +31,7 @@ export async function login(email, password) {
         alert(error.message); 
     }
 }
+
 
 
 
