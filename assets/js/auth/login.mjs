@@ -16,7 +16,12 @@ export async function login(email, password) {
 
         const { accessToken, ...profile } = (await response.json()).data;
 
-        save("Token", accessToken);
+        if (accessToken) {
+            save("Token", accessToken);
+        } else {
+            console.error("Access token missing from login response.");
+        }
+
         save("Profile", profile);
 
         const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
@@ -31,6 +36,7 @@ export async function login(email, password) {
         alert(error.message); 
     }
 }
+
 
 
 
