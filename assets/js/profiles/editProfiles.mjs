@@ -2,19 +2,12 @@ import { API_BASE, API_KEY } from "../constants.mjs";
 import { load } from "../storage/storage.mjs";
 
 export async function updateUserCredits(username, credits) {
-    const token = load("Token");
-
-    if (!token) {
-        console.error("Token is missing or undefined.");
-        return;
-    }
-
     try {
         const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,  
+                "Authorization": `Bearer ${load("Token")}`,
                 "X-Noroff-API-Key": API_KEY,
             },
             body: JSON.stringify({ credits }),
@@ -31,18 +24,12 @@ export async function updateUserCredits(username, credits) {
     }
 }
 
+// Forsikre deg om at denne funksjonen er riktig eksportert
 export async function fetchUserCredits(username) {
-    const token = load("Token");
-
-    if (!token) {
-        console.error("Token is missing or undefined.");
-        return;
-    }
-
     try {
         const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
             headers: {
-                "Authorization": `Bearer ${token}`, 
+                "Authorization": `Bearer ${load("Token")}`,
                 "X-Noroff-API-Key": API_KEY,
             },
         });
