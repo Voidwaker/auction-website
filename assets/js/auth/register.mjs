@@ -1,21 +1,23 @@
 import { save } from "../storage/storage.mjs";
-import { API_BASE, API_REGISTER } from "../constants.mjs";
+import { API_BASE, API_REGISTER, API_KEY } from "../constants.mjs";
 import { login } from "./login.mjs";  
-import { updateUserCredits } from "../profiles/editProfiles.mjs";
 
 export async function register(name, email, password, bio, avatarUrl, venueManager = false) {
     const requestBody = {
         name,
         email,
         password,
-        bio: bio || '',
+        bio: bio || '', 
         avatar: avatarUrl ? { url: avatarUrl, alt: "User Avatar" } : undefined,
-        venueManager: venueManager
+        venueManager: venueManager 
     };
 
     try {
         const response = await fetch(`${API_BASE}${API_REGISTER}`, {
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "X-Noroff-API-Key": API_KEY  
+            },
             method: "POST",
             body: JSON.stringify(requestBody),
         });
@@ -29,29 +31,15 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         const data = await response.json();
         console.log("Bruker registrert:", data);
 
-        save("Profile", data.data);
+        await login(email, password);
 
-        const loginResult = await login(email, password);  
-
-        if (loginResult && loginResult.accessToken) {
-            console.log("Access token:", loginResult.accessToken);
-            await updateUserCredits(data.data.name, 1000);  
-        } else {
-            console.error("Access token is missing from login response.");
-        }
-
-        const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-        if (modal) {
-            modal.hide();
-        }
-
-        window.location.hash = "#/profile";
         return data;
     } catch (error) {
         console.error("Feil ved registrering:", error);
         throw error;
     }
 }
+
 
 
 
