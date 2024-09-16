@@ -1,7 +1,9 @@
-import { API_BASE, API_KEY } from "../constants.mjs";
-import { load } from "../storage/storage.mjs";
-
 export async function updateUserCredits(username, credits) {
+    if (!username) {
+        console.error("Username is undefined. Cannot update credits.");
+        return;
+    }
+
     try {
         const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
             method: "PUT",
@@ -24,25 +26,6 @@ export async function updateUserCredits(username, credits) {
     }
 }
 
-export async function fetchUserCredits(username) {
-    try {
-        const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
-            headers: {
-                "Authorization": `Bearer ${load("Token")}`,
-                "X-Noroff-API-Key": API_KEY,
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch credits: ${response.status}`);
-        }
-
-        const result = await response.json();
-        return result.data.credits;
-    } catch (error) {
-        console.error("Error fetching credits:", error);
-    }
-}
 
 
 
