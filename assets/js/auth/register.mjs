@@ -9,7 +9,7 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         password,
         bio: bio || '', 
         avatar: avatarUrl ? { url: avatarUrl, alt: "User Avatar" } : undefined,
-        venueManager: venueManager 
+        venueManager: venueManager // Optional field
     };
 
     try {
@@ -43,6 +43,7 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         throw error;
     }
 }
+
 
 
 
