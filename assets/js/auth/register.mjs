@@ -33,6 +33,8 @@ export async function register(name, email, password, bio, avatarUrl) {
         const data = await response.json();
         console.log("Bruker registrert:", data);
 
+        save("Profile", data);
+
         if (data.name) {
             await updateUserCredits(data.name, 1000);
         } else {
@@ -46,4 +48,5 @@ export async function register(name, email, password, bio, avatarUrl) {
         throw error;
     }
 }
+
 
