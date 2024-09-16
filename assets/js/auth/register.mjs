@@ -1,7 +1,7 @@
 import { save } from "../storage/storage.mjs";
 import { API_BASE, API_REGISTER } from "../constants.mjs";
+import { login } from "./login.mjs";  
 import { updateUserCredits } from "../profiles/editProfiles.mjs";
-import { login } from "./login.mjs"; 
 
 export async function register(name, email, password, bio, avatarUrl, venueManager = false) {
     const requestBody = {
@@ -31,18 +31,21 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
 
         save("Profile", data.data);
 
-        if (data.data.name) {
-            await updateUserCredits(data.data.name, 1000);  
-        }
+        const loginResult = await login(email, password);  
 
-        await login(data.data.email, password);  
+        if (loginResult && loginResult.accessToken) {
+            console.log("Access token:", loginResult.accessToken);
+            await updateUserCredits(data.data.name, 1000);  
+        } else {
+            console.error("Access token is missing from login response.");
+        }
 
         const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
         if (modal) {
             modal.hide();
         }
 
-        window.location.hash = "#/profile"; 
+        window.location.hash = "#/profile";
         return data;
     } catch (error) {
         console.error("Feil ved registrering:", error);

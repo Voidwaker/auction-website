@@ -16,12 +16,11 @@ export async function login(email, password) {
 
         const { accessToken, ...profile } = (await response.json()).data;
 
-        if (accessToken) {
-            save("Token", accessToken);
-        } else {
-            console.error("Access token missing from login response.");
+        if (!accessToken) {
+            throw new Error("Access token is missing from login response.");
         }
 
+        save("Token", accessToken);
         save("Profile", profile);
 
         const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
@@ -30,10 +29,11 @@ export async function login(email, password) {
         }
 
         window.location.hash = "#/profile"; 
-        return profile;
+        return { accessToken, profile };
     } catch (error) {
         console.error("Login error:", error);
-        alert(error.message); 
+        alert(error.message);
+        return null;  
     }
 }
 
