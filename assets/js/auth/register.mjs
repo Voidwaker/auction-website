@@ -32,7 +32,12 @@ export async function register(name, email, password, bio, avatarUrl) {
 
         const data = await response.json();
         console.log("Bruker registrert:", data);
-        await updateUserCredits(data.name, 1000);
+
+        if (data.name) {
+            await updateUserCredits(data.name, 1000);
+        } else {
+            console.error("Brukernavnet mangler i responsdataen.");
+        }
 
         window.location.hash = "#/profile"; 
         return data;
