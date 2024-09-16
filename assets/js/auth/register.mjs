@@ -1,55 +1,51 @@
 import { save, load } from "../storage/storage.mjs";
-import { API_BASE, API_REGISTER, API_CREATE_API_KEY } from "../constants.mjs";
-import { login } from "../auth/login.mjs"; 
+import { API_BASE, API_REGISTER } from "../constants.mjs";
+import { login } from "./login.mjs"; 
 
-export async function register(name, email, password) {
-    const response = await fetch(`${API_BASE}${API_REGISTER}`, {  
-        headers: {
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({ name, email, password }),
-    });
+export async function register(name, email, password, bio, avatarUrl) {
+    // Vi sørger for å sende bio selv om den er tom
+    const requestBody = {
+        name,
+        email,
+        password,
+        bio: bio || 'No bio available',  // Setter en standard hvis bio er tom
+    };
 
-    if (response.ok) {
-        const jsonResponse = await response.json();
-        console.log("Registration successful:", jsonResponse);
+    // Hvis det er en avatar-URL, legger vi den også til
+    if (avatarUrl) {
+        requestBody.avatar = {
+            url: avatarUrl,
+            alt: "User Avatar"
+        };
+    }
 
-        await login(email, password); 
+    try {
+        const response = await fetch(`${API_BASE}${API_REGISTER}`, {
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            body: JSON.stringify(requestBody),
+        });
 
-        if (!load("ApiKey")) {
-            await getApiKey();
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Registration failed:", errorData);
+            throw new Error("Failed to register account");
         }
 
-        return jsonResponse;
-    } else {
-        const errorText = await response.text();
-        console.error("Registration failed:", errorText);
-        throw new Error("Failed to register account");
+        const data = await response.json();
+        console.log("Registration successful:", data);
+
+        // Logg inn brukeren automatisk etter registrering
+        await login(email, password);
+
+        return data;
+    } catch (error) {
+        console.error("Feil ved registrering:", error);
+        throw error;
     }
 }
 
-export async function getApiKey() {
-    const response = await fetch(`${API_BASE}${API_CREATE_API_KEY}`, {  
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${load("Token")}`,
-        },
-        method: "POST",
-        body: JSON.stringify({ name: "Auction Website Key" }),
-    });
 
-    if (response.ok) {
-        const apiKeyData = await response.json();
-        save("ApiKey", apiKeyData.data.key);
-        console.log("API key fetched:", apiKeyData);
-        return apiKeyData;
-    } else {
-        const errorText = await response.text();
-        console.error("Failed to fetch API key:", errorText);
-        throw new Error("Failed to fetch API key");
-    }
-}
 
 
 

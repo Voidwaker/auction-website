@@ -20,7 +20,7 @@ export async function updateCreditDisplay() {
 
 export async function updateBioDisplay() {
     const profile = load("Profile");
-    const bio = profile?.bio || "No bio available";
+    const bio = profile?.bio || "No bio available";  
     const bioElement = document.getElementById("profileBio");
 
     if (bioElement) {
@@ -41,6 +41,7 @@ export function updateProfileName() {
         console.error("Element with id 'profileName' not found.");
     }
 }
+
 
 export async function updateAvatar(newAvatarUrl) {
     const token = load("Token");

@@ -17,8 +17,9 @@ export async function login(email, password) {
             throw new Error(`Login failed: ${errorData.errors[0].message || response.statusText}`);
         }
 
-        const { accessToken, ...profile } = (await response.json()).data;
-
+        const { accessToken, bio = "No bio available", ...profile } = (await response.json()).data;
+        profile.bio = bio; 
+        
         save("Token", accessToken);
         save("Profile", profile);
 

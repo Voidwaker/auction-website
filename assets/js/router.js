@@ -66,56 +66,57 @@ function loadProfilePage() {
         </div>
     `;
 
-    // Forsikre deg om at elementene eksisterer før du prøver å oppdatere dem
-    const profileNameElement = document.getElementById('profileName');
-    const profileBioElement = document.getElementById('profileBio');
-    const profileCreditsElement = document.getElementById('profileCredits');
+    setTimeout(() => {
+        const profileNameElement = document.getElementById('profileName');
+        const profileBioElement = document.getElementById('profileBio');
+        const profileCreditsElement = document.getElementById('profileCredits');
 
-    if (profileNameElement) {
-        updateProfileName();
-    } else {
-        console.error("Element with id 'profileName' not found.");
-    }
+        if (profileNameElement) {
+            updateProfileName();
+        } else {
+            console.error("Element with id 'profileName' not found.");
+        }
 
-    if (profileBioElement) {
-        updateBioDisplay();
-    } else {
-        console.error("Element with id 'profileBio' not found.");
-    }
+        if (profileBioElement) {
+            updateBioDisplay();
+        } else {
+            console.error("Element with id 'profileBio' not found.");
+        }
 
-    if (profileCreditsElement) {
-        updateCreditDisplay();
-    } else {
-        console.error("Element with id 'profileCredits' not found.");
-    }
+        if (profileCreditsElement) {
+            updateCreditDisplay();
+        } else {
+            console.error("Element with id 'profileCredits' not found.");
+        }
 
-    const logoutButton = document.getElementById('logoutButton');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', async () => {
-            await logout();
-            window.location.hash = '#/';
-        });
-    }
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', async () => {
+                await logout();
+                window.location.hash = '#/';
+            });
+        }
 
-    const avatarButton = document.getElementById('updateAvatarButton');
-    if (avatarButton) {
-        avatarButton.addEventListener('click', () => {
-            const newAvatarUrl = document.getElementById('avatarUrlInput').value;
-            updateAvatar(newAvatarUrl);
-        });
-    }
+        const avatarButton = document.getElementById('updateAvatarButton');
+        if (avatarButton) {
+            avatarButton.addEventListener('click', () => {
+                const newAvatarUrl = document.getElementById('avatarUrlInput').value;
+                updateAvatar(newAvatarUrl);
+            });
+        }
 
-    const createAuctionForm = document.getElementById('createAuctionForm');
-    if (createAuctionForm) {
-        createAuctionForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const title = document.getElementById('auctionTitle').value;
-            const description = document.getElementById('auctionDescription').value;
-            const endDate = document.getElementById('auctionEndDate').value;
-            const mediaUrl = document.getElementById('auctionMedia').value;
-            await createAuction(title, description, endDate, mediaUrl);
-        });
-    }
+        const createAuctionForm = document.getElementById('createAuctionForm');
+        if (createAuctionForm) {
+            createAuctionForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const title = document.getElementById('auctionTitle').value;
+                const description = document.getElementById('auctionDescription').value;
+                const endDate = document.getElementById('auctionEndDate').value;
+                const mediaUrl = document.getElementById('auctionMedia').value;
+                await createAuction(title, description, endDate, mediaUrl);
+            });
+        }
+    }, 100);
 }
 
 function loadAuctionsPage() {
@@ -128,7 +129,9 @@ function loadAuctionsPage() {
         </div>
     `;
 
-    fetchAndDisplayListings();
+    setTimeout(() => {
+        fetchAndDisplayListings();
+    }, 100); 
 }
 
 function router() {
