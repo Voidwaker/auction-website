@@ -3,7 +3,7 @@ import { API_BASE, API_LOGIN, API_KEY } from "../constants.mjs";
 
 export async function login(email, password) {
     try {
-        const response = await fetch(`${API_BASE}${API_LOGIN}`, {
+        const response = await fetch(`${API_BASE}${API_LOGIN}`, { 
             headers: { 
                 "Content-Type": "application/json",
                 "X-Noroff-API-Key": API_KEY  
@@ -27,13 +27,14 @@ export async function login(email, password) {
             modal.hide();
         }
 
-        window.location.hash = "#/profile"; 
+        window.location.hash = "#/profile";  
         return profile;
     } catch (error) {
         console.error("Login error:", error);
         alert(error.message); 
     }
 }
+
 
 
 

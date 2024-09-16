@@ -13,6 +13,11 @@ function handleLoginForm() {
             const email = document.getElementById("loginEmail").value;
             const password = document.getElementById("loginPassword").value;
             await login(email, password);
+
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            if (loginModal) {
+                loginModal.hide(); 
+            }
         });
     }
 }
@@ -27,7 +32,13 @@ function handleRegisterForm() {
             const password = document.getElementById("registerPassword").value;
             const bio = document.getElementById("registerBio").value;
             const avatarUrl = document.getElementById("registerAvatarUrl").value;
+
             await register(name, email, password, bio, avatarUrl);
+
+            const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+            if (registerModal) {
+                registerModal.hide(); 
+            }
         });
     }
 }
