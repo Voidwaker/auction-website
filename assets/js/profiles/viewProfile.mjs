@@ -1,6 +1,6 @@
 import { load } from "../storage/storage.mjs";
-import { fetchUserCredits } from "./editProfiles.mjs"; 
 import { API_BASE } from "../constants.mjs";
+import { fetchUserCredits } from "./editProfiles.mjs";
 
 export async function updateCreditDisplay() {
     const profile = load("Profile");
@@ -9,7 +9,7 @@ export async function updateCreditDisplay() {
     if (username) {
         const credits = await fetchUserCredits(username);
         const creditElement = document.getElementById("profileCredits");
-        
+
         if (creditElement) {
             creditElement.textContent = `Credits: ${credits}`;
         } else {
@@ -34,7 +34,7 @@ export function updateProfileName() {
     const profile = load("Profile");
     const username = profile?.name || "Unknown User";
     const nameElement = document.getElementById("profileName");
-    
+
     if (nameElement) {
         nameElement.textContent = username;
     } else {

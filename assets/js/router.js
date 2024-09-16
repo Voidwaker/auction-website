@@ -66,9 +66,28 @@ function loadProfilePage() {
         </div>
     `;
 
-    updateProfileName();
-    updateBioDisplay();
-    updateCreditDisplay();
+    // Forsikre deg om at elementene eksisterer før du prøver å oppdatere dem
+    const profileNameElement = document.getElementById('profileName');
+    const profileBioElement = document.getElementById('profileBio');
+    const profileCreditsElement = document.getElementById('profileCredits');
+
+    if (profileNameElement) {
+        updateProfileName();
+    } else {
+        console.error("Element with id 'profileName' not found.");
+    }
+
+    if (profileBioElement) {
+        updateBioDisplay();
+    } else {
+        console.error("Element with id 'profileBio' not found.");
+    }
+
+    if (profileCreditsElement) {
+        updateCreditDisplay();
+    } else {
+        console.error("Element with id 'profileCredits' not found.");
+    }
 
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
