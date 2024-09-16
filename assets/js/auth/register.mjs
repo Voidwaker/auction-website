@@ -31,7 +31,7 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
         if (data.accessToken) {
             save("Token", data.accessToken);
         } else {
-            console.error("Access token missing from registration response.");
+            console.error("Access token is missing from registration response.");
         }
 
         save("Profile", data.data);
@@ -40,6 +40,11 @@ export async function register(name, email, password, bio, avatarUrl, venueManag
             await updateUserCredits(data.data.name, 1000);
         } else {
             console.error("Brukernavnet mangler i responsdataen.");
+        }
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+        if (modal) {
+            modal.hide();
         }
 
         window.location.hash = "#/profile"; 
