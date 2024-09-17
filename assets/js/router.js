@@ -20,8 +20,8 @@ function loadHomePage() {
         </div>
     `;
 
-    setupSearchHandler();  // Koble til søkefunksjonen på hjemmesiden
-    fetchAndDisplayListings();  // Hent og vis alle auksjoner når siden lastes inn
+    setupSearchHandler();  
+    fetchAndDisplayListings(); 
 }
 
 function loadProfilePage() {
@@ -120,8 +120,8 @@ function loadAuctionsPage() {
         </div>
     `;
 
-    setupSearchHandler();  // Koble til søkefunksjonen på auksjonssiden
-    fetchAndDisplayListings();  // Hent og vis alle auksjoner
+    setupSearchHandler(); 
+    fetchAndDisplayListings();  
 }
 
 function router() {
