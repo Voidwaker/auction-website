@@ -1,6 +1,6 @@
 import { ALL_LISTINGS_URL } from "../constants.mjs";
 
-export async function fetchAndDisplayListings() {
+export async function fetchAndDisplayListings(searchTerm = '') {
     setTimeout(async () => {
         const auctionList = document.getElementById('auction-list');
         if (!auctionList) {
@@ -16,7 +16,17 @@ export async function fetchAndDisplayListings() {
             if (Array.isArray(listings)) {
                 auctionList.innerHTML = '';
 
-                listings.forEach(listing => {
+                const filteredListings = listings.filter(listing => {
+                    const title = listing.title.toLowerCase();
+                    const description = listing.description ? listing.description.toLowerCase() : '';
+                    return title.includes(searchTerm.toLowerCase()) || description.includes(searchTerm.toLowerCase());
+                });
+
+                if (filteredListings.length === 0) {
+                    auctionList.innerHTML = '<p>Ingen auksjoner funnet.</p>';
+                }
+
+                filteredListings.forEach(listing => {
                     const auctionCard = document.createElement('div');
                     auctionCard.classList.add('col-md-4', 'mb-4');
 
@@ -39,24 +49,17 @@ export async function fetchAndDisplayListings() {
         } catch (error) {
             console.error('Feil ved henting av auksjoner:', error);
         }
-    }, 100); 
+    }, 100);
 }
 
-export function filterAuctions(searchTerm) {
-    const auctionList = document.getElementById('auction-list');
-    if (!auctionList) return;
+// Funksjon for å oppdatere søket når brukeren skriver i søkefeltet
+export function setupSearchHandler() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
 
-    const auctionCards = auctionList.querySelectorAll('.card');
-
-    auctionCards.forEach(card => {
-        const title = card.querySelector('.card-title').textContent.toLowerCase();
-        const description = card.querySelector('.card-text').textContent.toLowerCase();
-
-        if (title.includes(searchTerm) || description.includes(searchTerm)) {
-            card.parentElement.style.display = '';
-        } else {
-            card.parentElement.style.display = 'none';
-        }
+    searchInput.addEventListener('input', (event) => {
+        const searchTerm = event.target.value;
+        fetchAndDisplayListings(searchTerm);
     });
 }
 

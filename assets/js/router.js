@@ -1,7 +1,8 @@
-import { fetchAndDisplayListings } from './auctions/viewAuctions.mjs';
+import { fetchAndDisplayListings, setupSearchHandler } from './auctions/viewAuctions.mjs';
 import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
 import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
+import { fetchAuctionDetails } from './auctions/listing-details.mjs';
 
 function loadHomePage() {
     document.getElementById('app').innerHTML = `
@@ -12,8 +13,15 @@ function loadHomePage() {
                 <button class="btn btn-primary me-md-2" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</button>
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
             </div>
+            <div class="search-section mt-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Søk etter auksjoner...">
+            </div>
+            <div class="row mt-4" id="auction-list"></div>
         </div>
     `;
+
+    setupSearchHandler();  // Koble til søkefunksjonen på hjemmesiden
+    fetchAndDisplayListings();  // Hent og vis alle auksjoner når siden lastes inn
 }
 
 function loadProfilePage() {
@@ -66,72 +74,54 @@ function loadProfilePage() {
         </div>
     `;
 
-    setTimeout(() => {
-        const profileNameElement = document.getElementById('profileName');
-        const profileBioElement = document.getElementById('profileBio');
-        const profileCreditsElement = document.getElementById('profileCredits');
+    updateProfileName();
+    updateBioDisplay();
+    updateCreditDisplay();
 
-        if (profileNameElement) {
-            updateProfileName();
-        } else {
-            console.error("Element with id 'profileName' not found.");
-        }
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            await logout();
+            window.location.hash = '#/';
+        });
+    }
 
-        if (profileBioElement) {
-            updateBioDisplay();
-        } else {
-            console.error("Element with id 'profileBio' not found.");
-        }
+    const avatarButton = document.getElementById('updateAvatarButton');
+    if (avatarButton) {
+        avatarButton.addEventListener('click', () => {
+            const newAvatarUrl = document.getElementById('avatarUrlInput').value;
+            updateAvatar(newAvatarUrl);
+        });
+    }
 
-        if (profileCreditsElement) {
-            updateCreditDisplay();
-        } else {
-            console.error("Element with id 'profileCredits' not found.");
-        }
-
-        const logoutButton = document.getElementById('logoutButton');
-        if (logoutButton) {
-            logoutButton.addEventListener('click', async () => {
-                await logout();
-                window.location.hash = '#/';
-            });
-        }
-
-        const avatarButton = document.getElementById('updateAvatarButton');
-        if (avatarButton) {
-            avatarButton.addEventListener('click', () => {
-                const newAvatarUrl = document.getElementById('avatarUrlInput').value;
-                updateAvatar(newAvatarUrl);
-            });
-        }
-
-        const createAuctionForm = document.getElementById('createAuctionForm');
-        if (createAuctionForm) {
-            createAuctionForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const title = document.getElementById('auctionTitle').value;
-                const description = document.getElementById('auctionDescription').value;
-                const endDate = document.getElementById('auctionEndDate').value;
-                const mediaUrl = document.getElementById('auctionMedia').value;
-                await createAuction(title, description, endDate, mediaUrl);
-            });
-        }
-    }, 100);
+    const createAuctionForm = document.getElementById('createAuctionForm');
+    if (createAuctionForm) {
+        createAuctionForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const title = document.getElementById('auctionTitle').value;
+            const description = document.getElementById('auctionDescription').value;
+            const endDate = document.getElementById('auctionEndDate').value;
+            const mediaUrl = document.getElementById('auctionMedia').value;
+            await createAuction(title, description, endDate, mediaUrl);
+        });
+    }
 }
 
 function loadAuctionsPage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
-            <h1>Available Auctions</h1>
-            <div id="auction-list" class="list-group">
-                <!-- Auksjoner vil bli lagt til her -->
+            <h1 class="text-center mb-4">Alle Auksjoner</h1>
+            <div class="search-section mb-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Søk etter auksjoner...">
+            </div>
+            <div class="row" id="auction-list">
+                <!-- Auksjoner vil bli generert her -->
             </div>
         </div>
     `;
 
-    setTimeout(() => {
-        fetchAndDisplayListings();
-    }, 100); 
+    setupSearchHandler();  // Koble til søkefunksjonen på auksjonssiden
+    fetchAndDisplayListings();  // Hent og vis alle auksjoner
 }
 
 function router() {
@@ -139,7 +129,7 @@ function router() {
     const route = {
         '/': loadHomePage,
         '/profile': loadProfilePage,
-        '/auctions': loadAuctionsPage, 
+        '/auctions': loadAuctionsPage,
     }[path];
 
     if (route) {
