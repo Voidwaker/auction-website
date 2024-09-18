@@ -2,7 +2,7 @@ import { fetchAndDisplayListings, setupSearchHandler } from './auctions/viewAuct
 import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
 import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
-import { fetchAuctionDetails } from './auctions/listing-details.mjs';
+import { fetchAuctionDetails, updateBidDisplay } from './auctions/listing-details.mjs'; // Legg til import her
 
 function loadHomePage() {
     document.getElementById('app').innerHTML = `
@@ -124,16 +124,24 @@ function loadAuctionsPage() {
     fetchAndDisplayListings();  
 }
 
+function loadAuctionDetailsPage(listingId) {
+    fetchAuctionDetails(listingId); 
+    updateBidDisplay(listingId);  
+}
+
 function router() {
     const path = location.hash.slice(1) || '/';
     const route = {
         '/': loadHomePage,
         '/profile': loadProfilePage,
         '/auctions': loadAuctionsPage,
-    }[path];
+    };
 
-    if (route) {
-        route();
+    if (path.startsWith('/listing/')) {
+        const listingId = path.split('/')[2];
+        loadAuctionDetailsPage(listingId);
+    } else if (route[path]) {
+        route[path]();
     } else {
         console.error('Route not found');
     }

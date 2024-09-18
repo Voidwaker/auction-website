@@ -1,4 +1,4 @@
-import { API_BASE } from "../constants.mjs";
+import { API_BASE, API_KEY } from "../constants.mjs"; 
 import { load } from "../storage/storage.mjs";
 
 export async function fetchAuctionDetails(listingId) {
@@ -6,7 +6,7 @@ export async function fetchAuctionDetails(listingId) {
         const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_seller=true&_bids=true`, {
             headers: {
                 "Authorization": `Bearer ${load("Token")}`,
-                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+                "X-Noroff-API-Key": API_KEY, 
             },
         });
 
@@ -23,21 +23,36 @@ export async function fetchAuctionDetails(listingId) {
 }
 
 function updateAuctionDetails(listing) {
-    const titleElement = document.querySelector('.listing-title');
-    const imageElement = document.querySelector('.listing-image');
-    const descriptionElement = document.querySelector('.listing-description');
-    const sellerInfoElement = document.querySelector('.seller-info');
+    const appElement = document.getElementById('app');
+    appElement.innerHTML = `
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h1 class="mb-4">${listing.title || "Auction Title"}</h1>
+                    <img src="${listing.media && listing.media.length > 0 ? listing.media[0].url : '/images/placeholder.jpg'}" class="img-fluid mb-4 listing-image" alt="${listing.title}">
+                    <p class="listing-description">${listing.description || "No description available."}</p>
+                    <p class="seller-info">${listing.seller?.name || "No seller information available"}</p>
+                    <p class="bids-info">Current highest bid: 0</p>
+                    <button class="btn btn-secondary mt-3" onclick="window.location.hash = '#/auctions'">Back to Auctions</button>
+                </div>
+            </div>
 
-    titleElement.textContent = listing.title || "Auction Title";
-    descriptionElement.textContent = listing.description || "No description available.";
-    sellerInfoElement.textContent = listing.seller?.name || "No seller information available";
-
-    if (listing.media && listing.media.length > 0) {
-        imageElement.src = listing.media[0].url;
-        imageElement.alt = listing.media[0].alt || "Auction Image";
-    } else {
-        imageElement.src = "/images/placeholder.jpg"; 
-    }
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-8">
+                    <h3>Recent Bids</h3>
+                    <ul class="list-group bids-history">
+                        <!-- Budhistorikk vil bli lastet her -->
+                    </ul>
+                    <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#allBids" aria-expanded="false" aria-controls="allBids">View All Bids</button>
+                    <div class="collapse mt-3" id="allBids">
+                        <ul class="list-group all-bids">
+                            <!-- Full budhistorikk vil bli lastet her -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 export async function updateBidDisplay(listingId) {
@@ -45,7 +60,7 @@ export async function updateBidDisplay(listingId) {
         const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_bids=true`, {
             headers: {
                 "Authorization": `Bearer ${load("Token")}`,
-                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+                "X-Noroff-API-Key": API_KEY,
             },
         });
 
@@ -56,13 +71,37 @@ export async function updateBidDisplay(listingId) {
         const data = await response.json();
         const bids = data.data.bids;
         const bidsInfoElement = document.querySelector('.bids-info');
+        const recentBidsElement = document.querySelector('.bids-history');
+        const allBidsElement = document.querySelector('.all-bids');
+
+        if (!bidsInfoElement || !recentBidsElement || !allBidsElement) {
+            console.error("One or more bid display elements not found in DOM");
+            return;
+        }
 
         if (bids.length === 0) {
             bidsInfoElement.textContent = 'No bids available';
-        } else {
-            const highestBid = Math.max(...bids.map(bid => bid.amount));
-            bidsInfoElement.innerHTML = `Current highest bid: ${highestBid}`;
+            return;
         }
+
+        const highestBid = Math.max(...bids.map(bid => bid.amount));
+        bidsInfoElement.innerHTML = `Current highest bid: ${highestBid}`;
+
+        const recentBids = bids.slice(0, 5);
+        recentBids.forEach(bid => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.textContent = `User: ${bid.bidder?.name || 'Unknown'}, Amount: ${bid.amount}`;
+            recentBidsElement.appendChild(listItem);
+        });
+
+        bids.forEach(bid => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.textContent = `User: ${bid.bidder?.name || 'Unknown'}, Amount: ${bid.amount}`;
+            allBidsElement.appendChild(listItem);
+        });
+
     } catch (error) {
         console.error('Error fetching bids:', error);
     }
@@ -89,7 +128,7 @@ export async function placeBid(listingId, bidAmount) {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+                "X-Noroff-API-Key": API_KEY,
             },
             body: JSON.stringify({ amount: bidAmount }),
         });
@@ -110,7 +149,7 @@ async function getCurrentHighestBid(listingId) {
         const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_bids=true`, {
             headers: {
                 "Authorization": `Bearer ${load("Token")}`,
-                "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+                "X-Noroff-API-Key": API_KEY,
             },
         });
 
@@ -126,6 +165,7 @@ async function getCurrentHighestBid(listingId) {
         return 0;
     }
 }
+
 
 
 

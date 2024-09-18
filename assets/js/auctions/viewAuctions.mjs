@@ -1,31 +1,29 @@
 import { ALL_LISTINGS_URL } from "../constants.mjs";
 
 export async function fetchAndDisplayListings(searchTerm = '') {
-    setTimeout(async () => {
-        const auctionList = document.getElementById('auction-list');
-        if (!auctionList) {
-            console.error('Element med id "auction-list" ikke funnet i DOM');
-            return;  
-        }
+    const auctionList = document.getElementById('auction-list');
+    if (!auctionList) {
+        console.error('Element med id "auction-list" ikke funnet i DOM');
+        return;
+    }
 
-        try {
-            const response = await fetch(ALL_LISTINGS_URL);
-            const result = await response.json();
-            const listings = result.data || result;
+    try {
+        const response = await fetch(ALL_LISTINGS_URL);
+        const result = await response.json();
+        const listings = result.data || result;
 
-            if (Array.isArray(listings)) {
-                auctionList.innerHTML = '';
+        if (Array.isArray(listings)) {
+            auctionList.innerHTML = '';
 
-                const filteredListings = listings.filter(listing => {
-                    const title = listing.title.toLowerCase();
-                    const description = listing.description ? listing.description.toLowerCase() : '';
-                    return title.includes(searchTerm.toLowerCase()) || description.includes(searchTerm.toLowerCase());
-                });
+            const filteredListings = listings.filter(listing => {
+                const title = listing.title.toLowerCase();
+                const description = listing.description ? listing.description.toLowerCase() : '';
+                return title.includes(searchTerm.toLowerCase()) || description.includes(searchTerm.toLowerCase());
+            });
 
-                if (filteredListings.length === 0) {
-                    auctionList.innerHTML = '<p>Ingen auksjoner funnet.</p>';
-                }
-
+            if (filteredListings.length === 0) {
+                auctionList.innerHTML = '<p>Ingen auksjoner funnet.</p>';
+            } else {
                 filteredListings.forEach(listing => {
                     const auctionCard = document.createElement('div');
                     auctionCard.classList.add('col-md-4', 'mb-4');
@@ -36,23 +34,22 @@ export async function fetchAndDisplayListings(searchTerm = '') {
                             <div class="card-body">
                                 <h5 class="card-title">${listing.title}</h5>
                                 <p class="card-text">${listing.description || 'Ingen beskrivelse tilgjengelig.'}</p>
-                                <a href="/pages/listing-details.html?id=${listing.id}" class="btn btn-primary">Se auksjon</a>
+                                <a href="#/listing-details?id=${listing.id}" class="btn btn-primary">Se auksjon</a>
                             </div>
                         </div>
                     `;
 
                     auctionList.appendChild(auctionCard);
                 });
-            } else {
-                console.error('Listings er ikke en array:', listings);
             }
-        } catch (error) {
-            console.error('Feil ved henting av auksjoner:', error);
+        } else {
+            console.error('Listings er ikke en array:', listings);
         }
-    }, 100);
+    } catch (error) {
+        console.error('Feil ved henting av auksjoner:', error);
+    }
 }
 
-// Funksjon for å oppdatere søket når brukeren skriver i søkefeltet
 export function setupSearchHandler() {
     const searchInput = document.getElementById('searchInput');
     if (!searchInput) return;
@@ -62,6 +59,7 @@ export function setupSearchHandler() {
         fetchAndDisplayListings(searchTerm);
     });
 }
+
 
 
 
