@@ -1,4 +1,4 @@
-import { API_BASE, API_KEY } from "../constants.mjs"; 
+import { API_BASE, API_KEY } from "../constants.mjs";
 import { load } from "../storage/storage.mjs";
 
 export async function fetchAuctionDetails(listingId) {
@@ -6,7 +6,7 @@ export async function fetchAuctionDetails(listingId) {
         const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_seller=true&_bids=true`, {
             headers: {
                 "Authorization": `Bearer ${load("Token")}`,
-                "X-Noroff-API-Key": API_KEY, 
+                "X-Noroff-API-Key": API_KEY,
             },
         });
 
@@ -15,7 +15,7 @@ export async function fetchAuctionDetails(listingId) {
         }
 
         const data = await response.json();
-        updateAuctionDetails(data.data); 
+        updateAuctionDetails(data.data);
         return data.data;
     } catch (error) {
         console.error('Error fetching auction details:', error);
@@ -33,6 +33,10 @@ function updateAuctionDetails(listing) {
                     <p class="listing-description">${listing.description || "No description available."}</p>
                     <p class="seller-info">${listing.seller?.name || "No seller information available"}</p>
                     <p class="bids-info">Current highest bid: 0</p>
+                    <div class="bid-section mt-4">
+                        <input type="number" id="bidAmount" class="form-control mb-3" placeholder="Enter bid amount">
+                        <button id="placeBidButton" class="btn btn-success">Place Bid</button>
+                    </div>
                     <button class="btn btn-secondary mt-3" onclick="window.location.hash = '#/auctions'">Back to Auctions</button>
                 </div>
             </div>
@@ -43,7 +47,9 @@ function updateAuctionDetails(listing) {
                     <ul class="list-group bids-history">
                         <!-- Budhistorikk vil bli lastet her -->
                     </ul>
-                    <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#allBids" aria-expanded="false" aria-controls="allBids">View All Bids</button>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#allBids" aria-expanded="false" aria-controls="allBids">View All Bids</button>
+                    </div>
                     <div class="collapse mt-3" id="allBids">
                         <ul class="list-group all-bids">
                             <!-- Full budhistorikk vil bli lastet her -->
@@ -53,6 +59,18 @@ function updateAuctionDetails(listing) {
             </div>
         </div>
     `;
+
+    const placeBidButton = document.getElementById('placeBidButton');
+    if (placeBidButton) {
+        placeBidButton.addEventListener('click', async () => {
+            const bidAmount = document.getElementById('bidAmount').value;
+            if (bidAmount) {
+                await placeBid(listing.id, bidAmount);
+            } else {
+                alert("Please enter a bid amount.");
+            }
+        });
+    }
 }
 
 export async function updateBidDisplay(listingId) {
@@ -74,31 +92,28 @@ export async function updateBidDisplay(listingId) {
         const recentBidsElement = document.querySelector('.bids-history');
         const allBidsElement = document.querySelector('.all-bids');
 
-        if (!bidsInfoElement || !recentBidsElement || !allBidsElement) {
-            console.error("One or more bid display elements not found in DOM");
-            return;
-        }
-
         if (bids.length === 0) {
             bidsInfoElement.textContent = 'No bids available';
             return;
         }
 
         const highestBid = Math.max(...bids.map(bid => bid.amount));
-        bidsInfoElement.innerHTML = `Current highest bid: ${highestBid}`;
+        bidsInfoElement.innerHTML = `Current highest bid: $${highestBid}`;
 
+        recentBidsElement.innerHTML = '';
         const recentBids = bids.slice(0, 5);
         recentBids.forEach(bid => {
             const listItem = document.createElement('li');
             listItem.classList.add('list-group-item');
-            listItem.textContent = `User: ${bid.bidder?.name || 'Unknown'}, Amount: ${bid.amount}`;
+            listItem.textContent = `${bid.bidder?.name || 'Unknown'}, $${bid.amount}`;
             recentBidsElement.appendChild(listItem);
         });
 
+        allBidsElement.innerHTML = '';
         bids.forEach(bid => {
             const listItem = document.createElement('li');
             listItem.classList.add('list-group-item');
-            listItem.textContent = `User: ${bid.bidder?.name || 'Unknown'}, Amount: ${bid.amount}`;
+            listItem.textContent = `${bid.bidder?.name || 'Unknown'}, $${bid.amount}`;
             allBidsElement.appendChild(listItem);
         });
 
@@ -165,6 +180,7 @@ async function getCurrentHighestBid(listingId) {
         return 0;
     }
 }
+
 
 
 
