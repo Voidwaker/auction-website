@@ -24,6 +24,19 @@ export async function fetchAuctionDetails(listingId) {
 
 function updateAuctionDetails(listing) {
     const appElement = document.getElementById('app');
+    const endsAt = new Date(listing.endsAt);
+    const now = new Date();
+    const timeRemaining = endsAt - now;
+
+    let timeRemainingText = 'Auction has ended';
+    if (timeRemaining > 0) {
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+
+        timeRemainingText = `${days}d ${hours}h ${minutes}m remaining`;
+    }
+
     appElement.innerHTML = `
         <div class="container mt-5">
             <div class="row justify-content-center">
@@ -33,6 +46,7 @@ function updateAuctionDetails(listing) {
                     <p class="listing-description">${listing.description || "No description available."}</p>
                     <p class="seller-info">${listing.seller?.name || "No seller information available"}</p>
                     <p class="bids-info">Current highest bid: 0</p>
+                    <p class="auction-time">${timeRemainingText}</p>
                     <div class="bid-section mt-4">
                         <input type="number" id="bidAmount" class="form-control mb-3" placeholder="Enter bid amount">
                         <button id="placeBidButton" class="btn btn-success">Place Bid</button>
@@ -61,16 +75,16 @@ function updateAuctionDetails(listing) {
     `;
 
     const placeBidButton = document.getElementById('placeBidButton');
-if (placeBidButton) {
-    placeBidButton.addEventListener('click', async () => {
-        const bidAmount = parseFloat(document.getElementById('bidAmount').value);
-        if (isNaN(bidAmount) || bidAmount <= 0) {
-            alert("Please enter a valid bid amount.");
-        } else {
-            await placeBid(listing.id, bidAmount);
-        }
-    });
-}
+    if (placeBidButton) {
+        placeBidButton.addEventListener('click', async () => {
+            const bidAmount = document.getElementById('bidAmount').value;
+            if (bidAmount) {
+                await placeBid(listing.id, bidAmount);
+            } else {
+                alert("Please enter a bid amount.");
+            }
+        });
+    }
 }
 
 export async function updateBidDisplay(listingId) {

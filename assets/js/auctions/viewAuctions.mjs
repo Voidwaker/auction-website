@@ -46,7 +46,7 @@ export async function fetchAndDisplayListings(searchTerm = '') {
             console.error('Listings er ikke en array:', listings);
         }
     } catch (error) {
-        console.error('Feil ved henting av auksjoner:', error);
+        console.error('errore fetching listings:', error);
     }
 }
 
