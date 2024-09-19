@@ -61,16 +61,16 @@ function updateAuctionDetails(listing) {
     `;
 
     const placeBidButton = document.getElementById('placeBidButton');
-    if (placeBidButton) {
-        placeBidButton.addEventListener('click', async () => {
-            const bidAmount = document.getElementById('bidAmount').value;
-            if (bidAmount) {
-                await placeBid(listing.id, bidAmount);
-            } else {
-                alert("Please enter a bid amount.");
-            }
-        });
-    }
+if (placeBidButton) {
+    placeBidButton.addEventListener('click', async () => {
+        const bidAmount = parseFloat(document.getElementById('bidAmount').value);
+        if (isNaN(bidAmount) || bidAmount <= 0) {
+            alert("Please enter a valid bid amount.");
+        } else {
+            await placeBid(listing.id, bidAmount);
+        }
+    });
+}
 }
 
 export async function updateBidDisplay(listingId) {
@@ -88,8 +88,6 @@ export async function updateBidDisplay(listingId) {
 
         const data = await response.json();
         const bids = data.data.bids;
-
-        // Kontroller at elementene er i DOM
         const bidsInfoElement = document.querySelector('.bids-info');
         const recentBidsElement = document.querySelector('.bids-history');
         const allBidsElement = document.querySelector('.all-bids');
