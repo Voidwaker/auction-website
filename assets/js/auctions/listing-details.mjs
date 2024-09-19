@@ -88,6 +88,8 @@ export async function updateBidDisplay(listingId) {
 
         const data = await response.json();
         const bids = data.data.bids;
+
+        // Kontroller at elementene er i DOM
         const bidsInfoElement = document.querySelector('.bids-info');
         const recentBidsElement = document.querySelector('.bids-history');
         const allBidsElement = document.querySelector('.all-bids');
