@@ -42,13 +42,13 @@ function updateAuctionDetails(listing) {
             </div>
 
             <div class="row justify-content-center mt-4">
-                <div class="col-md-8">
+                <div class="col-md-8 text-center">
                     <h3>Recent Bids</h3>
                     <ul class="list-group bids-history">
                         <!-- Budhistorikk vil bli lastet her -->
                     </ul>
                     <div class="text-center mt-3">
-                        <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#allBids" aria-expanded="false" aria-controls="allBids">View All Bids</button>
+                        <button class="btn btn-primary mt-3 text-center" data-bs-toggle="collapse" data-bs-target="#allBids" aria-expanded="false" aria-controls="allBids">View All Bids</button>
                     </div>
                     <div class="collapse mt-3" id="allBids">
                         <ul class="list-group all-bids">
@@ -91,6 +91,11 @@ export async function updateBidDisplay(listingId) {
         const bidsInfoElement = document.querySelector('.bids-info');
         const recentBidsElement = document.querySelector('.bids-history');
         const allBidsElement = document.querySelector('.all-bids');
+
+        if (!bidsInfoElement || !recentBidsElement || !allBidsElement) {
+            console.error("One or more bid display elements not found in DOM");
+            return;
+        }
 
         if (bids.length === 0) {
             bidsInfoElement.textContent = 'No bids available';

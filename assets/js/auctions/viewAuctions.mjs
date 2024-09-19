@@ -34,7 +34,7 @@ export async function fetchAndDisplayListings(searchTerm = '') {
                             <div class="card-body">
                                 <h5 class="card-title">${listing.title}</h5>
                                 <p class="card-text">${listing.description || 'Ingen beskrivelse tilgjengelig.'}</p>
-                                <a href="#/listing-details?id=${listing.id}" class="btn btn-primary">Se auksjon</a>
+                                <a href="#/listing-details?id=${listing.id}" class="btn btn-primary">View auction</a>
                             </div>
                         </div>
                     `;

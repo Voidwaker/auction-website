@@ -2,13 +2,13 @@ import { fetchAndDisplayListings, setupSearchHandler } from './auctions/viewAuct
 import { updateProfileName, updateBioDisplay, updateCreditDisplay, updateAvatar } from './profiles/viewProfile.mjs';
 import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
-import { fetchAuctionDetails, updateBidDisplay } from './auctions/listing-details.mjs'; // Legg til import her
+import { fetchAuctionDetails, updateBidDisplay } from './auctions/listing-details.mjs';
 
 function loadHomePage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
-            <h1>Velkommen til Auksjonsnettstedet</h1>
-            <p>Dette er hjemmesiden hvor brukere kan utforske plattformen.</p>
+            <h1>welcome to my auction!</h1>
+            <p>sign up today, and get 1000 credit risk free! just click the register button below to sign up! or you can login if you already have a user! .</p>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <button class="btn btn-primary me-md-2" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</button>
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
@@ -110,9 +110,9 @@ function loadProfilePage() {
 function loadAuctionsPage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
-            <h1 class="text-center mb-4">Alle Auksjoner</h1>
+            <h1 class="text-center mb-4">All Auctions</h1>
             <div class="search-section mb-4">
-                <input type="text" id="searchInput" class="form-control" placeholder="Søk etter auksjoner...">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for auctions...">
             </div>
             <div class="row" id="auction-list">
                 <!-- Auksjoner vil bli generert her -->
@@ -125,8 +125,12 @@ function loadAuctionsPage() {
 }
 
 function loadAuctionDetailsPage(listingId) {
-    fetchAuctionDetails(listingId); 
-    updateBidDisplay(listingId);  
+    if (listingId) {
+        fetchAuctionDetails(listingId);
+        updateBidDisplay(listingId);  
+    } else {
+        console.error('No listing ID provided for auction details.');
+    }
 }
 
 function router() {
@@ -137,8 +141,8 @@ function router() {
         '/auctions': loadAuctionsPage,
     };
 
-    if (path.startsWith('/listing/')) {
-        const listingId = path.split('/')[2];
+    if (path.startsWith('listing/')) {
+        const listingId = path.split('/')[1];
         loadAuctionDetailsPage(listingId);
     } else if (route[path]) {
         route[path]();
