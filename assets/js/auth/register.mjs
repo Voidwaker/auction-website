@@ -3,15 +3,13 @@ import { API_BASE, API_REGISTER } from "../constants.mjs";
 import { login } from "./login.mjs"; 
 
 export async function register(name, email, password, bio, avatarUrl) {
-    // Vi sørger for å sende bio selv om den er tom
     const requestBody = {
         name,
         email,
         password,
-        bio: bio || 'No bio available',  // Setter en standard hvis bio er tom
+        bio: bio || 'No bio available', 
     };
 
-    // Hvis det er en avatar-URL, legger vi den også til
     if (avatarUrl) {
         requestBody.avatar = {
             url: avatarUrl,
@@ -34,8 +32,6 @@ export async function register(name, email, password, bio, avatarUrl) {
 
         const data = await response.json();
         console.log("Registration successful:", data);
-
-        // Logg inn brukeren automatisk etter registrering
         await login(email, password);
 
         return data;
