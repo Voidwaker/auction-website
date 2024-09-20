@@ -3,6 +3,13 @@ import { API_BASE, API_REGISTER } from "../constants.mjs";
 import { login } from "./login.mjs"; 
 
 export async function register(name, email, password, bio, avatarUrl) {
+    const emailRegex = /@(stud\.noroff\.no|noroff\.no)$/;
+    
+    if (!emailRegex.test(email)) {
+        alert("Please use a valid Noroff email address (@stud.noroff.no or @noroff.no).");
+        return;
+    }
+
     const requestBody = {
         name,
         email,
@@ -40,6 +47,7 @@ export async function register(name, email, password, bio, avatarUrl) {
         throw error;
     }
 }
+
 
 
 
