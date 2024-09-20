@@ -164,6 +164,9 @@ export async function placeBid(listingId, bidAmount) {
             return;
         }
 
+        const bidData = { amount: bidAmountNumber };
+        console.log("Sending bid data:", bidData); 
+
         const response = await fetch(`${API_BASE}/auction/listings/${listingId}/bids`, {
             method: "POST",
             headers: {
@@ -171,10 +174,12 @@ export async function placeBid(listingId, bidAmount) {
                 "Authorization": `Bearer ${token}`,
                 "X-Noroff-API-Key": API_KEY,
             },
-            body: JSON.stringify({ amount: bidAmountNumber }), 
+            body: JSON.stringify(bidData),
         });
 
         if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Failed to place bid:", errorData);
             throw new Error("Failed to place bid");
         }
 
