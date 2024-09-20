@@ -1,5 +1,5 @@
 import { load } from "../storage/storage.mjs";
-import { API_BASE } from "../constants.mjs";
+import { API_BASE, API_KEY } from "../constants.mjs";  
 import { fetchUserCredits } from "./editProfiles.mjs";
 
 export async function updateCreditDisplay() {
@@ -42,7 +42,6 @@ export function updateProfileName() {
     }
 }
 
-
 export async function updateAvatar(newAvatarUrl) {
     const token = load("Token");
     const profile = load("Profile");
@@ -53,14 +52,19 @@ export async function updateAvatar(newAvatarUrl) {
     }
 
     try {
-        const response = await fetch(`${API_BASE}/auction/profiles/${profile.name}/media`, {
+        const response = await fetch(`${API_BASE}/auction/profiles/${profile.name}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-                "X-Noroff-API-Key": API_KEY,
+                "X-Noroff-API-Key": API_KEY,  
             },
-            body: JSON.stringify({ avatar: { url: newAvatarUrl, alt: "User Avatar" } }),
+            body: JSON.stringify({ 
+                avatar: { 
+                    url: newAvatarUrl, 
+                    alt: "User Avatar" 
+                } 
+            }),
         });
 
         if (!response.ok) {
@@ -68,14 +72,19 @@ export async function updateAvatar(newAvatarUrl) {
         }
 
         const result = await response.json();
+        
+        const avatarImageElement = document.getElementById('avatarImage');
+        if (avatarImageElement) {
+            avatarImageElement.src = newAvatarUrl; 
+            avatarImageElement.alt = "User Avatar";
+        }
+
         alert("Avatar updated successfully!");
         return result;
     } catch (error) {
         console.error("Error updating avatar:", error);
     }
 }
-
-
 
 
 
