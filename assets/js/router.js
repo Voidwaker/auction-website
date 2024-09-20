@@ -8,13 +8,14 @@ function loadHomePage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
             <h1>welcome to my auction!</h1>
-            <p>sign up today, and get 1000 credit risk free! just click the register button below to sign up! or you can login if you already have a user! .</p>
+            <p>sign up today, and get 1000 credit risk free! just click the register button below to sign up! or you can login if you already have a user
+            remebmber only registerd accounts can join a auction, so dont hesitate.! .</p>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <button class="btn btn-primary me-md-2" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</button>
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
             </div>
             <div class="search-section mt-4">
-                <input type="text" id="searchInput" class="form-control" placeholder="Søk etter auksjoner...">
+                <input type="text" id="searchInput" class="form-control" placeholder="serarch for auction...">
             </div>
             <div class="row mt-4" id="auction-list"></div>
         </div>

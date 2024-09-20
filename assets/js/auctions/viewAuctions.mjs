@@ -3,7 +3,7 @@ import { ALL_LISTINGS_URL } from "../constants.mjs";
 export async function fetchAndDisplayListings(searchTerm = '') {
     const auctionList = document.getElementById('auction-list');
     if (!auctionList) {
-        console.error('Element med id "auction-list" ikke funnet i DOM');
+        console.error('Element with id "auction-list" not found in  DOM');
         return;
     }
 
@@ -22,7 +22,7 @@ export async function fetchAndDisplayListings(searchTerm = '') {
             });
 
             if (filteredListings.length === 0) {
-                auctionList.innerHTML = '<p>Ingen auksjoner funnet.</p>';
+                auctionList.innerHTML = '<p>no auctions found!.</p>';
             } else {
                 filteredListings.forEach(listing => {
                     const auctionCard = document.createElement('div');
@@ -30,10 +30,10 @@ export async function fetchAndDisplayListings(searchTerm = '') {
 
                     auctionCard.innerHTML = `
                         <div class="card h-100">
-                            <img src="${listing.media.length > 0 ? listing.media[0].url : '/images/placeholder.jpg'}" class="card-img-top" alt="${listing.title}">
+                            <img src="${listing.media.length > 0 ? listing.media[0].url : '/assets/images/standard-avatar.jpeg'}" class="card-img-top" alt="${listing.title}">
                             <div class="card-body">
                                 <h5 class="card-title">${listing.title}</h5>
-                                <p class="card-text">${listing.description || 'Ingen beskrivelse tilgjengelig.'}</p>
+                                <p class="card-text">${listing.description || 'no description available.'}</p>
                                 <a href="#/listing-details?id=${listing.id}" class="btn btn-primary">View auction</a>
                             </div>
                         </div>
@@ -43,7 +43,7 @@ export async function fetchAndDisplayListings(searchTerm = '') {
                 });
             }
         } else {
-            console.error('Listings er ikke en array:', listings);
+            console.error('Listings is not an array:', listings);
         }
     } catch (error) {
         console.error('errore fetching listings:', error);

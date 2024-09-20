@@ -54,7 +54,6 @@ function updateAuctionDetails(listing) {
                     <button class="btn btn-secondary mt-3" onclick="window.location.hash = '#/auctions'">Back to Auctions</button>
                 </div>
             </div>
-
             <div class="row justify-content-center mt-4">
                 <div class="col-md-8 text-center">
                     <h3>Recent Bids</h3>

@@ -43,7 +43,7 @@ export async function register(name, email, password, bio, avatarUrl) {
 
         return data;
     } catch (error) {
-        console.error("Feil ved registrering:", error);
+        console.error("error while register:", error);
         throw error;
     }
 }
