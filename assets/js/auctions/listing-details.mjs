@@ -149,10 +149,17 @@ export async function placeBid(listingId, bidAmount) {
         return;
     }
 
+    const bidAmountNumber = Number(bidAmount);
+
+    if (isNaN(bidAmountNumber) || bidAmountNumber <= 0) {
+        alert("Please enter a valid bid amount.");
+        return;
+    }
+
     try {
         const currentHighestBid = await getCurrentHighestBid(listingId);
 
-        if (bidAmount <= currentHighestBid) {
+        if (bidAmountNumber <= currentHighestBid) {
             alert(`Your bid must be higher than the current bid of ${currentHighestBid}`);
             return;
         }
@@ -164,7 +171,7 @@ export async function placeBid(listingId, bidAmount) {
                 "Authorization": `Bearer ${token}`,
                 "X-Noroff-API-Key": API_KEY,
             },
-            body: JSON.stringify({ amount: bidAmount }),
+            body: JSON.stringify({ amount: bidAmountNumber }), 
         });
 
         if (!response.ok) {
@@ -172,7 +179,7 @@ export async function placeBid(listingId, bidAmount) {
         }
 
         alert("Bid placed successfully!");
-        await updateBidDisplay(listingId); 
+        await updateBidDisplay(listingId);
     } catch (error) {
         console.error('Error placing bid:', error);
     }
