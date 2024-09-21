@@ -42,7 +42,7 @@ function loadProfilePage() {
                         <div class="profile-actions">
                             <input type="text" id="avatarUrlInput" class="form-control mb-3" placeholder="Enter new avatar URL">
                             <button class="btn btn-primary w-100 mb-3" id="updateAvatarButton">Change Avatar</button>
-                            <button class="btn btn-danger w-100" id="logoutButton">Logout</button>
+                            <button class="btn logout-btn w-100" id="logoutButton">Logout</button>
                         </div>
                     </div>
                 </div>

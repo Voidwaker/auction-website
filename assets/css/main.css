@@ -486,10 +486,6 @@ button,
 [type=reset],
 [type=submit] {
   -webkit-appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
-  appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -547,7 +543,6 @@ legend + * {
 
 [type=search] {
   -webkit-appearance: textfield;
-  appearance: textfield;
   outline-offset: -2px;
 }
 
@@ -11921,6 +11916,52 @@ input {
 .modal-title {
   color: #212529;
   font-weight: bold;
+}
+
+.text-center .btn {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button,
+.btn,
+#loginModal .btn,
+#registerModal .btn {
+  background-color: #3AD305;
+  border-color: #3AD305;
+  color: #000;
+}
+button:hover,
+.btn:hover,
+#loginModal .btn:hover,
+#registerModal .btn:hover {
+  background-color: #2ca104;
+  border-color: #2ca104;
+}
+button:focus, button:active,
+.btn:focus,
+.btn:active,
+#loginModal .btn:focus,
+#loginModal .btn:active,
+#registerModal .btn:focus,
+#registerModal .btn:active {
+  background-color: #4df912;
+  border-color: #4df912;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #000;
+}
+.logout-btn:hover {
+  background-color: #bd2130;
+  border-color: #bd2130;
+}
+.logout-btn:focus, .logout-btn:active {
+  background-color: #e4606d;
+  border-color: #e4606d;
 }
 
 /*# sourceMappingURL=main.css.map */

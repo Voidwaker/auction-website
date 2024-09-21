@@ -11,7 +11,7 @@ body {
   text-align: center;
 
   .profile-avatar img {
-    border-radius: 50%; 
+    border-radius: 50%;
     margin-bottom: 20px;
   }
 
@@ -19,7 +19,7 @@ body {
     margin-bottom: 20px;
 
     p {
-      font-size: 18px; 
+      font-size: 18px;
     }
   }
 
@@ -27,19 +27,19 @@ body {
     margin-top: 20px;
 
     .btn {
-      width: 100%; 
-      margin-bottom: 15px; 
+      width: 100%;
+      margin-bottom: 15px;
     }
   }
 }
 
 input::placeholder {
-  color: #6c757d; 
-  opacity: 1; 
+  color: #6c757d;
+  opacity: 1;
 }
 
 input {
-  color: #212529; 
+  color: #212529;
 }
 
 $placeholder-color: #6c757d;
@@ -55,31 +55,31 @@ input {
 }
 
 .modal .form-control {
-  color: #212529; 
+  color: #212529;
 }
 
 .modal .form-label {
-  color: #212529; 
+  color: #212529;
 }
 
 .modal input::placeholder {
-  color: #000000; 
-  opacity: 1; 
+  color: #000000;
+  opacity: 1;
 }
 
 .modal .btn-primary {
   background-color: #007bff;
-  color: #fff; 
+  color: #fff;
 }
 
 .modal .btn-secondary {
   background-color: #6c757d;
-  color: #fff; 
+  color: #fff;
 }
 
 .modal-title {
   color: #212529;
-  font-weight: bold; 
+  font-weight: bold;
 }
 
 .text-center .btn {
@@ -93,12 +93,10 @@ $green-color: #3AD305;
 button, 
 .btn, 
 #loginModal .btn, 
-#registerModal .btn,
-#loginBtn, 
-#registerBtn {
+#registerModal .btn {
   background-color: $green-color;
   border-color: $green-color;
-  color: #fff;
+  color: #000; 
 
   &:hover {
     background-color: darken($green-color, 10%);
@@ -111,4 +109,24 @@ button,
     border-color: lighten($green-color, 10%);
   }
 }
+
+.logout-btn {
+  background-color: #dc3545; 
+  border-color: #dc3545;
+  color: #000; 
+
+  &:hover {
+    background-color: darken(#dc3545, 10%);
+    border-color: darken(#dc3545, 10%);
+  }
+
+  &:focus,
+  &:active {
+    background-color: lighten(#dc3545, 10%);
+    border-color: lighten(#dc3545, 10%);
+  }
+}
+
+
+
 
