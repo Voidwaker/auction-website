@@ -11931,6 +11931,9 @@ button,
   background-color: #3AD305;
   border-color: #3AD305;
   color: #000;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 button:hover,
 .btn:hover,

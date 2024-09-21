@@ -96,7 +96,11 @@ button,
 #registerModal .btn {
   background-color: $green-color;
   border-color: $green-color;
-  color: #000; 
+  color: #000;  
+  
+  appearance: none;        
+  -webkit-appearance: none; 
+  -moz-appearance: none;    
 
   &:hover {
     background-color: darken($green-color, 10%);
