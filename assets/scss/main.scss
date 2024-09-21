@@ -46,12 +46,12 @@ $placeholder-color: #6c757d;
 $text-color: #212529;
 
 input::placeholder {
-    color: $placeholder-color;
-    opacity: 1;
+  color: $placeholder-color;
+  opacity: 1;
 }
 
 input {
-    color: $text-color;
+  color: $text-color;
 }
 
 .modal .form-control {
@@ -76,6 +76,7 @@ input {
   background-color: #6c757d;
   color: #fff; 
 }
+
 .modal-title {
   color: #212529;
   font-weight: bold; 
@@ -86,3 +87,28 @@ input {
   margin-left: auto;
   margin-right: auto;
 }
+
+$green-color: #3AD305;
+
+button, 
+.btn, 
+#loginModal .btn, 
+#registerModal .btn,
+#loginBtn, 
+#registerBtn {
+  background-color: $green-color;
+  border-color: $green-color;
+  color: #fff;
+
+  &:hover {
+    background-color: darken($green-color, 10%);
+    border-color: darken($green-color, 10%);
+  }
+
+  &:focus,
+  &:active {
+    background-color: lighten($green-color, 10%);
+    border-color: lighten($green-color, 10%);
+  }
+}
+

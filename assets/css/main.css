@@ -488,6 +488,8 @@ button,
   -webkit-appearance: button;
   appearance: button;
   appearance: button;
+  appearance: button;
+  appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
