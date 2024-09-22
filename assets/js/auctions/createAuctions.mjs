@@ -12,6 +12,13 @@ export async function createAuction(title, description, endDate, mediaUrl) {
     try {
         const mediaArray = mediaUrl ? [{ url: mediaUrl }] : [];
 
+        console.log("Sending auction data:", {
+            title,
+            description,
+            endsAt: endDate,
+            media: mediaArray
+        });
+
         const response = await fetch(`${API_BASE}/auction/listings`, {
             method: "POST",
             headers: {
@@ -23,15 +30,18 @@ export async function createAuction(title, description, endDate, mediaUrl) {
                 title,
                 description,
                 endsAt: endDate,
-                media: mediaArray,
+                media: mediaArray, 
             }),
         });
 
+        const result = await response.json();
+        console.log("API response:", result);
+
         if (!response.ok) {
+            console.error("Error response from API:", result);
             throw new Error("Failed to create auction");
         }
 
-        const result = await response.json();
         alert("Auction created successfully!");
         return result;
     } catch (error) {
