@@ -65,19 +65,9 @@ The build will be generated in the dist folder.
 - **Create Listing**: Logged-in users can create auction listings with media and deadlines.
 - **Bidding**: Registered users can bid on active auctions created by other users.
 ### API Integration
-The project uses the Noroff Auction API to manage listings, users, and bids. For full API documentation, please refer to the Noroff Auction API.
+The project uses the Noroff Auction API to manage listings, users, and bids. For full API documentation, please refer to the Noroff API Documentation.
 
-### Explanation of Key Sections:
 
-1. **Features**: A list of functionalities offered by the project, including user registration, auction creation, bidding, and more.
-   
-2. **Technologies**: An overview of the technologies used in the project, such as SCSS, Bootstrap, JavaScript, and the Noroff Auction API.
-
-3. **Setup Instructions**: This section provides clear instructions on how to set up the project locally, which dependencies need to be installed, and how to build and run the application.
-
-4. **Usage**: A simple guide on how to use the application, including navigation and functionality for both registered and unregistered users.
-
-5. **Known Issues / Future Improvements**: Any known issues or areas you would like to improve in the future. This is optional but useful if there are certain features that still need enhancement.
 
 
 
