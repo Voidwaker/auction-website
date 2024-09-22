@@ -1,16 +1,21 @@
 import { API_BASE, API_KEY } from "../constants.mjs";
 import { load } from "../storage/storage.mjs";
 
+/**
+ * Creates a new auction with the given title, description, end date, and optional media URL.
+ *
+ * @param {string} title - The title of the auction.
+ * @param {string} description - A brief description of the auction.
+ * @param {string} endDate - The date and time when the auction will end (ISO 8601 format).
+ * @param {string} [mediaUrl] - An optional URL pointing to an image for the auction.
+ * @returns {Promise<object>} The created auction object if successful.
+ * @throws Will throw an error if the auction creation fails.
+ */
 export async function createAuction(title, description, endDate, mediaUrl) {
     const token = load("Token");
 
     if (!token) {
         alert("You need to be logged in to create an auction.");
-        return;
-    }
-
-    if (mediaUrl && mediaUrl.length > 300) {
-        alert("The image URL must be less than 300 characters.");
         return;
     }
 
@@ -54,5 +59,4 @@ export async function createAuction(title, description, endDate, mediaUrl) {
         alert("Error creating auction. Please try again.");
     }
 }
-
 
