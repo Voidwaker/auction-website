@@ -1,4 +1,6 @@
-(https://img.shields.io/badge/bootstrap-5.1.3-blue.svg)](https://getbootstrap.com/)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-v5.3.3-563d7c?logo=bootstrap&logoColor=white)
+![SCSS](https://img.shields.io/badge/SCSS-Supported-CC6699?logo=sass&logoColor=white)
+
 # auction-website
 
 This project is an auction platform where users can create, bid on, and manage auction listings. Registered users can place bids, while unregistered users can browse through listings. The project is built using HTML, SCSS, JavaScript, and follows the guidelines specified by the project brief.
