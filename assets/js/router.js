@@ -4,18 +4,23 @@ import { logout } from './auth/logout.mjs';
 import { createAuction } from './auctions/createAuctions.mjs';
 import { fetchAuctionDetails, updateBidDisplay } from './auctions/listing-details.mjs';
 
+/**
+ * Loads the homepage content, including the login, register buttons, and auction search section.
+ * 
+ * @function loadHomePage
+ */
 function loadHomePage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
             <h1>welcome to my auction!</h1>
-            <p>sign up today, and get 1000 credit risk free! just click the register button below to sign up! or you can login if you already have a user
-            remebmber only registerd accounts can join a auction, so dont hesitate.! .</p>
+            <p>Sign up today, and get 1000 credit risk free! just click the register button below to sign up! Or you can login if you already have a user.
+            Remember, only registered accounts can join an auction, so don't hesitate!</p>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <button class="btn btn-primary me-md-2" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</button>
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
             </div>
             <div class="search-section mt-4">
-                <input type="text" id="searchInput" class="form-control" placeholder="serarch for auction...">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for auction...">
             </div>
             <div class="row mt-4" id="auction-list"></div>
         </div>
@@ -25,6 +30,11 @@ function loadHomePage() {
     fetchAndDisplayListings(); 
 }
 
+/**
+ * Loads the profile page for the current logged-in user, including updating profile information and the ability to create auctions.
+ * 
+ * @function loadProfilePage
+ */
 function loadProfilePage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
@@ -108,6 +118,11 @@ function loadProfilePage() {
     }
 }
 
+/**
+ * Loads the auctions page where all auctions are listed and searchable.
+ * 
+ * @function loadAuctionsPage
+ */
 function loadAuctionsPage() {
     document.getElementById('app').innerHTML = `
         <div class="container mt-5">
@@ -116,7 +131,7 @@ function loadAuctionsPage() {
                 <input type="text" id="searchInput" class="form-control" placeholder="Search for auctions...">
             </div>
             <div class="row" id="auction-list">
-                <!-- Auksjoner vil bli generert her -->
+                <!-- Auctions will be displayed here -->
             </div>
         </div>
     `;
@@ -125,6 +140,12 @@ function loadAuctionsPage() {
     fetchAndDisplayListings();  
 }
 
+/**
+ * Loads auction details page for a specific auction.
+ * 
+ * @function loadAuctionDetailsPage
+ * @param {string} listingId - The ID of the auction listing to display.
+ */
 function loadAuctionDetailsPage(listingId) {
     if (listingId) {
         fetchAuctionDetails(listingId);
@@ -134,6 +155,11 @@ function loadAuctionDetailsPage(listingId) {
     }
 }
 
+/**
+ * Handles the routing of the application based on the current URL hash.
+ * 
+ * @function router
+ */
 function router() {
     const path = location.hash.slice(1) || '/';
     const route = {
