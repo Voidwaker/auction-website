@@ -1,6 +1,17 @@
 import { API_BASE, API_KEY } from "../constants.mjs";
 import { load } from "../storage/storage.mjs";
 
+/**
+ * Updates the user's credits in the profile.
+ * 
+ * This function sends a PUT request to the API to update the user's credits.
+ * 
+ * @async
+ * @function updateUserCredits
+ * @param {string} username - The username of the user whose credits are being updated.
+ * @param {number} credits - The number of credits to update the user's profile with.
+ * @returns {Promise<void>}
+ */
 export async function updateUserCredits(username, credits) {
     try {
         const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
@@ -24,7 +35,16 @@ export async function updateUserCredits(username, credits) {
     }
 }
 
-// Forsikre deg om at denne funksjonen er riktig eksportert
+/**
+ * Fetches the user's credits from the profile.
+ * 
+ * This function sends a GET request to the API to retrieve the user's current credits.
+ * 
+ * @async
+ * @function fetchUserCredits
+ * @param {string} username - The username of the user whose credits are being fetched.
+ * @returns {Promise<number>} The number of credits the user has.
+ */
 export async function fetchUserCredits(username) {
     try {
         const response = await fetch(`${API_BASE}/auction/profiles/${username}/credits`, {
@@ -44,6 +64,7 @@ export async function fetchUserCredits(username) {
         console.error("Error fetching credits:", error);
     }
 }
+
 
 
 
