@@ -9,6 +9,11 @@ export async function createAuction(title, description, endDate, mediaUrl) {
         return;
     }
 
+    if (mediaUrl && mediaUrl.length > 300) {
+        alert("The image URL must be less than 300 characters.");
+        return;
+    }
+
     try {
         const mediaArray = mediaUrl ? [{ url: mediaUrl }] : [];
 
@@ -49,4 +54,5 @@ export async function createAuction(title, description, endDate, mediaUrl) {
         alert("Error creating auction. Please try again.");
     }
 }
+
 
