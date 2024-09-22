@@ -10,6 +10,8 @@ export async function createAuction(title, description, endDate, mediaUrl) {
     }
 
     try {
+        const mediaArray = mediaUrl ? [{ url: mediaUrl }] : [];
+
         const response = await fetch(`${API_BASE}/auction/listings`, {
             method: "POST",
             headers: {
@@ -21,7 +23,7 @@ export async function createAuction(title, description, endDate, mediaUrl) {
                 title,
                 description,
                 endsAt: endDate,
-                media: mediaUrl ? [mediaUrl] : [],
+                media: mediaArray,
             }),
         });
 
@@ -37,3 +39,4 @@ export async function createAuction(title, description, endDate, mediaUrl) {
         alert("Error creating auction. Please try again.");
     }
 }
+
