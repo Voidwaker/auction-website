@@ -1,3 +1,8 @@
+
+![image](https://github.com/user-attachments/assets/1cdf4151-fcb0-4708-80a7-802d3f309635)
+
+
+
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-v5.3.3-563d7c?logo=bootstrap&logoColor=white)
 ![SCSS](https://img.shields.io/badge/SCSS-Supported-CC6699?logo=sass&logoColor=white)
 [![pages-build-deployment](https://github.com/Voidwaker/auction-website/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/Voidwaker/auction-website/actions/workflows/pages/pages-build-deployment)
